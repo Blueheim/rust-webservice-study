@@ -1,19 +1,12 @@
-use std::io;
+use std::{io, sync::RwLock};
 
-use actix_web::{
-    web::{self, ServiceConfig},
-    App, HttpResponse, HttpServer, Responder,
-};
+use actix_web::{middleware, web, App, HttpServer};
 
-// routes
-pub fn routes(cfg: &mut ServiceConfig) {
-    cfg.route("/", web::get().to(handler));
-}
+use data_source::DataSource;
+use domains::models::Cat;
 
-// handler
-pub async fn handler() -> impl Responder {
-    HttpResponse::Ok().json("Hello from actix !")
-}
+mod cat;
+mod data_source;
 
 /// Actix HTTP server
 /// uses multi-threading concurrency by starting multiple worker threads on startup
@@ -24,8 +17,30 @@ pub async fn handler() -> impl Responder {
 /// Actix has its own Async runtime that is based on Tokio
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    // Data source definition
+    let data_source = web::Data::new(DataSource {
+        cats: RwLock::new(vec![
+            Cat {
+                name: "Kiwi".into(),
+            },
+            Cat {
+                name: "Bella".into(),
+            },
+            Cat {
+                name: "Gizmo".into(),
+            },
+        ]),
+    });
+
     // App definition
-    let app = move || App::new().configure(routes);
+    let app = move || {
+        App::new()
+            .app_data(data_source.clone())
+            .wrap(middleware::NormalizePath::new(
+                middleware::TrailingSlash::Always,
+            ))
+            .service(web::scope("/api").configure(cat::routes::routes))
+    };
 
     // Start HTTP server
     HttpServer::new(app).bind("127.0.0.1:3000")?.run().await

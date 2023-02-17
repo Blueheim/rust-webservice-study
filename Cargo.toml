@@ -9,3 +9,5 @@ members = ["actix-ws", "warp-ws", "axum-ws"]
 
 [workspace.dependencies]
 domains = { path = "domains" }
+# Data serialization library
+serde = { version = "1.0.152", features = ["derive"] }
