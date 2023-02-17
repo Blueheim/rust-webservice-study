@@ -18,19 +18,7 @@ mod data_source;
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     // Data source definition
-    let data_source = web::Data::new(DataSource {
-        cats: RwLock::new(vec![
-            Cat {
-                name: "Kiwi".into(),
-            },
-            Cat {
-                name: "Bella".into(),
-            },
-            Cat {
-                name: "Gizmo".into(),
-            },
-        ]),
-    });
+    let data_source = web::Data::new(DataSource::mock());
 
     // App definition
     let app = move || {
