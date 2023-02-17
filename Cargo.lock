@@ -5,9 +5,16 @@ version = 3
 [[package]]
 name = "actix-ws"
 version = "0.1.0"
+dependencies = [
+ "domains",
+]
 
 [[package]]
 name = "axum-ws"
+version = "0.1.0"
+
+[[package]]
+name = "domains"
 version = "0.1.0"
 
 [[package]]

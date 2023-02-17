@@ -1,3 +1,8 @@
+use domains::models::Cat;
+
 fn main() {
-    println!("Hello, world!");
+    let cat = Cat {
+        name: "kiwi".into(),
+    };
+    println!("{:?}", cat);
 }
