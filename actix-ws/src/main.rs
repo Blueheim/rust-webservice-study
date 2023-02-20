@@ -1,9 +1,10 @@
-use std::{io, sync::RwLock};
+use std::io;
 
-use actix_web::{middleware, web, App, HttpServer};
-
+use app::WebServiceApp;
 use data_source::DataSource;
-use domains::models::Cat;
+
+mod app;
+mod server;
 
 mod cat;
 mod data_source;
@@ -18,18 +19,11 @@ mod data_source;
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     // Data source definition
-    let data_source = web::Data::new(DataSource::mock());
+    let data_source = DataSource::mock();
 
-    // App definition
-    let app = move || {
-        App::new()
-            .app_data(data_source.clone())
-            .wrap(middleware::NormalizePath::new(
-                middleware::TrailingSlash::Always,
-            ))
-            .service(web::scope("/api").configure(cat::routes::routes))
-    };
+    // Construct app
+    let web_app = WebServiceApp::new(data_source);
 
-    // Start HTTP server
-    HttpServer::new(app).bind("127.0.0.1:3000")?.run().await
+    // Start server app
+    server::start(web_app).await
 }

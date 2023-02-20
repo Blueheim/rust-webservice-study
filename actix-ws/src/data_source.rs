@@ -2,6 +2,7 @@ use std::sync::RwLock;
 
 use domains::models::Cat;
 
+#[derive(Debug)]
 pub struct DataSource {
     pub cats: RwLock<Vec<Cat>>,
 }
