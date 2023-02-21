@@ -10,4 +10,3 @@ domains = { workspace = true }
 serde = { workspace = true }
 # Actix web core
 actix-web = "4.3.0"
-

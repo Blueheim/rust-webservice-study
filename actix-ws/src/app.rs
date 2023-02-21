@@ -1,8 +1,8 @@
 use actix_web::{
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-    middleware,
+    error, middleware,
     web::{self, Data},
-    App, Error,
+    App, Error, HttpResponse,
 };
 
 use crate::{cat, data_source::DataSource};
@@ -38,6 +38,9 @@ impl WebServiceApp {
             .wrap(middleware::NormalizePath::new(
                 middleware::TrailingSlash::Always,
             ))
+            // .app_data(web::JsonConfig::default().error_handler(|err, _req| {
+            //     error::InternalError::from_response(err, HttpResponse::Conflict().into()).into()
+            // }))
             .service(web::scope("/api").configure(cat::routes::routes))
     }
 }
