@@ -1,7 +1,8 @@
 [
   {
     "id": "1",
-    "name": "Kiwi"
+    "name": "Kiwi",
+    "weight": 4
   },
   {
     "id": "2",
@@ -9,6 +10,7 @@
   },
   {
     "id": "3",
-    "name": "Gizmo"
+    "name": "Gizmo",
+    "weight": 6
   }
 ]

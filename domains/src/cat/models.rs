@@ -10,6 +10,7 @@ pub struct CatId(pub String);
 pub struct Cat {
     pub id: CatId,
     pub name: String,
+    pub weight: Option<u32>,
 }
 
 impl Cat {
@@ -24,6 +25,7 @@ impl Cat {
 #[derive(Deserialize, Debug, Clone)]
 pub struct NewCat {
     pub name: String,
+    pub weight: Option<u32>,
 }
 
 /// Update Cat struct
@@ -32,4 +34,13 @@ pub struct NewCat {
 #[derive(Deserialize, Debug, Clone)]
 pub struct UpdateCat {
     pub name: Option<String>,
+    pub weight: Option<u32>,
+}
+
+/// Replace Cat struct
+/// Mostly to be deserialized from json to db record
+#[derive(Deserialize, Debug, Clone)]
+pub struct ReplaceCat {
+    pub name: String,
+    pub weight: Option<u32>,
 }
