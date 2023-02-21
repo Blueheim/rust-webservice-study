@@ -22,7 +22,7 @@ impl Cat {
 
 /// New Cat struct
 /// Mostly to be deserialized from json to db record
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NewCat {
     pub name: String,
     pub weight: Option<u32>,
@@ -31,7 +31,7 @@ pub struct NewCat {
 /// Update Cat struct
 /// Mostly to be deserialized from json to db record
 /// All the fields are optional
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UpdateCat {
     pub name: Option<String>,
     pub weight: Option<u32>,
@@ -39,7 +39,7 @@ pub struct UpdateCat {
 
 /// Replace Cat struct
 /// Mostly to be deserialized from json to db record
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplaceCat {
     pub name: String,
     pub weight: Option<u32>,

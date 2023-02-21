@@ -18,3 +18,136 @@ pub fn routes(cfg: &mut ServiceConfig) {
             .route("/{cat_id}/", web::delete().to(remove_cat)),
     );
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::data_source::DataSource;
+    use actix_web::{http::header::ContentType, test, web, App};
+    use domains::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat};
+
+    fn test_data() -> web::Data<DataSource> {
+        web::Data::new(DataSource::from(vec![
+            Cat {
+                id: CatId("1".into()),
+                name: "A".into(),
+                weight: None,
+            },
+            Cat {
+                id: CatId("2".into()),
+                name: "B".into(),
+                weight: Some(3),
+            },
+        ]))
+    }
+
+    #[actix_web::test]
+    async fn test_get_all_cats() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::get()
+            .uri(format!("{}/", SCOPE).as_str())
+            .to_request();
+
+        // Act
+        let resp: Vec<Cat> = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.len(), 2);
+    }
+
+    #[actix_web::test]
+    async fn test_get_one_cat() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::get()
+            .uri(format!("{}/1/", SCOPE).as_str())
+            .to_request();
+
+        // Act
+        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.id.0, "1".to_string());
+    }
+
+    #[actix_web::test]
+    async fn test_post_cat() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::post()
+            .uri(format!("{}/", SCOPE).as_str())
+            .set_json(NewCat {
+                name: "C".into(),
+                weight: None,
+            })
+            .to_request();
+
+        // Act
+        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.id.0, "3".to_string());
+    }
+
+    #[actix_web::test]
+    async fn test_patch_cat() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::patch()
+            .uri(format!("{}/1/", SCOPE).as_str())
+            .set_json(UpdateCat {
+                name: None,
+                weight: Some(7),
+            })
+            .to_request();
+
+        // Act
+        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.name, "A".to_string());
+        assert_eq!(resp.weight.unwrap(), 7);
+    }
+
+    #[actix_web::test]
+    async fn test_put_cat() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::put()
+            .uri(format!("{}/1/", SCOPE).as_str())
+            .set_json(ReplaceCat {
+                name: "Z".into(),
+                weight: Some(5),
+            })
+            .to_request();
+
+        // Act
+        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.name, "Z".to_string());
+        assert_eq!(resp.weight.unwrap(), 5);
+    }
+
+    #[actix_web::test]
+    async fn test_delete_cat() {
+        // Arrange
+        let data = test_data();
+        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let req = test::TestRequest::delete()
+            .uri(format!("{}/2/", SCOPE).as_str())
+            .to_request();
+
+        // Act
+        let resp: Vec<Cat> = test::call_and_read_body_json(&app, req).await;
+
+        // Assert
+        assert_eq!(resp.len(), 1);
+    }
+}

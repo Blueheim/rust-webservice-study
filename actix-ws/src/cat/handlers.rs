@@ -35,8 +35,8 @@ pub async fn add_new_cat(
         name: new_cat.name.clone(),
         weight: new_cat.weight,
     };
-    cats.push(cat);
-    HttpResponse::Ok().json(cats.to_vec())
+    cats.push(cat.clone());
+    HttpResponse::Ok().json(cat)
 }
 
 /// Modify existing cat
@@ -64,8 +64,8 @@ pub async fn modify_cat(
                     current_cat.weight = update_cat.weight;
                 }
 
-                cats[index] = current_cat;
-                HttpResponse::Ok().json(cats.to_vec())
+                cats[index] = current_cat.clone();
+                HttpResponse::Ok().json(current_cat)
             },
         )
 }
@@ -90,8 +90,8 @@ pub async fn replace_cat(
                     name: update_cat.name.clone(),
                     weight: update_cat.weight,
                 };
-                cats[index] = cat;
-                HttpResponse::Ok().json(cats.to_vec())
+                cats[index] = cat.clone();
+                HttpResponse::Ok().json(cat)
             },
         )
 }

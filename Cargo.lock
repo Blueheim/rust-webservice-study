@@ -190,6 +190,7 @@ dependencies = [
  "actix-web",
  "domains",
  "serde",
+ "serde_json",
 ]
 
 [[package]]

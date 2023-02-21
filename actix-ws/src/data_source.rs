@@ -14,6 +14,12 @@ impl DataSource {
         }
     }
 
+    pub fn from(cats: Vec<Cat>) -> Self {
+        Self {
+            cats: RwLock::new(cats),
+        }
+    }
+
     pub fn mock() -> Self {
         Self {
             cats: RwLock::new(Cat::mock_data()),
