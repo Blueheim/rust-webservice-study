@@ -1,10 +1,13 @@
-use actix_web::{error, web, Error, HttpResponse};
+use actix_web::{web, HttpResponse};
 use domains::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat};
 
-use crate::data_source::DataSource;
+use crate::{
+    data_source::DataSource,
+    errors::{AppError, ClientError, Errors},
+};
 
 /// Fetch all cats
-pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, Error> {
+pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {
     let cats = data.cats.read().unwrap().to_vec();
     Ok(HttpResponse::Ok().json(cats))
 }
@@ -13,7 +16,7 @@ pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse,
 pub async fn fetch_one_cat(
     data: web::Data<DataSource>,
     path: web::Path<u32>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let cat_id = path.into_inner();
     let cats = data.cats.read().unwrap();
 
@@ -21,7 +24,14 @@ pub async fn fetch_one_cat(
         .into_iter()
         .position(|cat| cat.id.0 == cat_id.to_string())
         .map_or_else(
-            || Err(error::ErrorNotFound("Cat not found")),
+            || {
+                Err(AppError::new(Errors::Client(
+                    ClientError::ResourceNotFound {
+                        resource_name: "cats".into(),
+                        id: cat_id.to_string(),
+                    },
+                )))
+            },
             |index| Ok(HttpResponse::Ok().json(cats[index].clone())),
         )
 }
@@ -30,7 +40,7 @@ pub async fn fetch_one_cat(
 pub async fn add_new_cat(
     new_cat: web::Json<NewCat>, // data payload
     data: web::Data<DataSource>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let mut cats = data.cats.write().unwrap();
     let next_id = cats.len() + 1;
     let cat = Cat {
@@ -47,7 +57,7 @@ pub async fn modify_cat(
     data: web::Data<DataSource>,
     update_cat: web::Json<UpdateCat>,
     path: web::Path<u32>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let cat_id = path.into_inner();
     let mut cats = data.cats.write().unwrap();
 
@@ -55,7 +65,14 @@ pub async fn modify_cat(
         .into_iter()
         .position(|cat| cat.id.0 == cat_id.to_string())
         .map_or_else(
-            || Err(error::ErrorNotFound("Cat not found")),
+            || {
+                Err(AppError::new(Errors::Client(
+                    ClientError::ResourceNotFound {
+                        resource_name: "cats".into(),
+                        id: cat_id.to_string(),
+                    },
+                )))
+            },
             |index| {
                 let mut current_cat = cats[index].clone();
 
@@ -78,7 +95,7 @@ pub async fn replace_cat(
     data: web::Data<DataSource>,
     update_cat: web::Json<ReplaceCat>,
     path: web::Path<u32>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let cat_id = path.into_inner();
     let mut cats = data.cats.write().unwrap();
 
@@ -86,7 +103,14 @@ pub async fn replace_cat(
         .into_iter()
         .position(|cat| cat.id.0 == cat_id.to_string())
         .map_or_else(
-            || Err(error::ErrorNotFound("Cat not found")),
+            || {
+                Err(AppError::new(Errors::Client(
+                    ClientError::ResourceNotFound {
+                        resource_name: "cats".into(),
+                        id: cat_id.to_string(),
+                    },
+                )))
+            },
             |index| {
                 let cat = Cat {
                     id: CatId(cat_id.to_string()),
@@ -103,7 +127,7 @@ pub async fn replace_cat(
 pub async fn remove_cat(
     data: web::Data<DataSource>,
     path: web::Path<u32>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let cat_id = path.into_inner();
     let mut cats = data.cats.write().unwrap();
 
@@ -111,7 +135,14 @@ pub async fn remove_cat(
         .into_iter()
         .position(|cat| cat.id.0 == cat_id.to_string())
         .map_or_else(
-            || Err(error::ErrorNotFound("Cat not found")),
+            || {
+                Err(AppError::new(Errors::Client(
+                    ClientError::ResourceNotFound {
+                        resource_name: "cats".into(),
+                        id: cat_id.to_string(),
+                    },
+                )))
+            },
             |index| {
                 cats.remove(index);
                 Ok(HttpResponse::Ok().json(cats.to_vec()))

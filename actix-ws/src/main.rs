@@ -4,6 +4,7 @@ use app::WebServiceApp;
 use data_source::DataSource;
 
 mod app;
+mod errors;
 mod server;
 
 mod cat;
