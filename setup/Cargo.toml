@@ -1,7 +1,8 @@
 [package]
-name = "warp-ws"
+name = "setup"
 version = "0.1.0"
 authors = ["XD <blueheim>"]
 edition = "2021"
 
 [dependencies]
+config ={ verion="0.13.3", features = ["toml"]}
