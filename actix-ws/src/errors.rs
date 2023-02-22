@@ -1,9 +1,6 @@
 use actix_web::{error, http::StatusCode, HttpResponse};
 use derive_more::{Display, Error};
 
-// Global Marker trait
-pub trait ActixAppError: error::ResponseError {}
-
 #[derive(Debug, Display)]
 pub enum Errors {
     Client(ClientError),
@@ -41,36 +38,8 @@ pub enum ClientError {
     ResourceNotFound { resource_name: String, id: String },
 }
 
-// impl ActixAppError for ClientError {}
-
-// impl error::ResponseError for ClientError {
-//     fn error_response(&self) -> HttpResponse {
-//         HttpResponse::build(self.status_code()).json(self.to_string())
-//     }
-
-//     fn status_code(&self) -> StatusCode {
-//         match self {
-//             ClientError::ResourceNotFound { .. } => StatusCode::NOT_FOUND,
-//         }
-//     }
-// }
-
 #[derive(Debug, Display, Error)]
 pub enum ServerError {
     #[display(fmt = "Internal error. Try again later.")]
     Internal,
 }
-
-// impl ActixAppError for ServerError {}
-
-// impl error::ResponseError for ServerError {
-//     fn error_response(&self) -> HttpResponse {
-//         HttpResponse::build(self.status_code()).json(self.to_string())
-//     }
-
-//     fn status_code(&self) -> StatusCode {
-//         match self {
-//             ServerError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
-//         }
-//     }
-// }

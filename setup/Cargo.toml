@@ -6,3 +6,5 @@ edition = "2021"
 
 [dependencies]
 config ={ verion="0.13.3", features = ["toml"]}
+serde = { workspace= true }
+sqlx = { workspace= true }

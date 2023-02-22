@@ -22,12 +22,15 @@ pub fn routes(cfg: &mut ServiceConfig) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::data_source::DataSource;
+
     use actix_web::{http::header::ContentType, test, web, App};
-    use domains::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat};
+    use domains::{
+        models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
+        DataSource,
+    };
 
     fn test_data() -> web::Data<DataSource> {
-        web::Data::new(DataSource::from(vec![
+        web::Data::new(DataSource::mock(Some(vec![
             Cat {
                 id: CatId("1".into()),
                 name: "A".into(),
@@ -38,7 +41,7 @@ mod tests {
                 name: "B".into(),
                 weight: Some(3),
             },
-        ]))
+        ])))
     }
 
     #[actix_web::test]

@@ -4,8 +4,9 @@ use actix_web::{
     web::{self, Data},
     App, Error, HttpResponse,
 };
+use domains::DataSource;
 
-use crate::{cat, data_source::DataSource};
+use crate::cat;
 
 #[derive(Debug, Clone)]
 pub struct WebServiceApp {

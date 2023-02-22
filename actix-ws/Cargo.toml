@@ -6,9 +6,12 @@ edition = "2021"
 
 [dependencies]
 # Workspace
+setup = { workspace = true }
 domains = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 derive_more = { workspace = true }
+dotenv = { workspace = true }
+async-trait = { workspace = true }
 # Actix web core
 actix-web = "4.3.0"

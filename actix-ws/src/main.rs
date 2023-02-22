@@ -1,14 +1,15 @@
+use domains::DataSource;
+use dotenv;
+use std::env;
 use std::io;
 
 use app::WebServiceApp;
-use data_source::DataSource;
 
 mod app;
 mod errors;
 mod server;
 
 mod cat;
-mod data_source;
 
 /// Actix HTTP server
 /// uses multi-threading concurrency by starting multiple worker threads on startup
@@ -19,8 +20,15 @@ mod data_source;
 /// Actix has its own Async runtime that is based on Tokio
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    // Load .env file
+    dotenv::dotenv().ok();
+
     // Data source definition
-    let data_source = DataSource::mock();
+    let data_source = if let Ok(_) = env::var("MOCK") {
+        DataSource::mock(None)
+    } else {
+        DataSource::db().await
+    };
 
     // Construct app
     let web_app = WebServiceApp::new(data_source);
