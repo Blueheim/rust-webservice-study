@@ -10,7 +10,7 @@ pub fn select_all(source: &MockSource) -> Vec<Cat> {
     source.cats.read().unwrap().to_vec()
 }
 
-pub fn select_one(id: u32, source: &MockSource) -> Result<Cat, AppError> {
+pub fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
     let cats = source.cats.read().unwrap();
 
     cats.clone()
@@ -46,7 +46,7 @@ pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError>
     Ok(cat)
 }
 
-pub fn update_one(id: u32, update_cat: UpdateCat, source: &MockSource) -> Result<Cat, AppError> {
+pub fn update_one(id: i32, update_cat: UpdateCat, source: &MockSource) -> Result<Cat, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()
@@ -82,7 +82,7 @@ pub fn update_one(id: u32, update_cat: UpdateCat, source: &MockSource) -> Result
         )
 }
 
-pub fn replace_one(id: u32, replace_cat: ReplaceCat, source: &MockSource) -> Result<Cat, AppError> {
+pub fn replace_one(id: i32, replace_cat: ReplaceCat, source: &MockSource) -> Result<Cat, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()
@@ -111,7 +111,7 @@ pub fn replace_one(id: u32, replace_cat: ReplaceCat, source: &MockSource) -> Res
         )
 }
 
-pub fn delete_one(id: u32, source: &MockSource) -> Result<Vec<Cat>, AppError> {
+pub fn delete_one(id: i32, source: &MockSource) -> Result<Vec<Cat>, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()

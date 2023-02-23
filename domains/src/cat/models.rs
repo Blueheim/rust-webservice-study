@@ -32,6 +32,16 @@ pub struct NewCat {
     pub weight: Option<f32>,
 }
 
+/// Current Cat struct
+/// Mostly used when retrieving current record from the db before an update
+/// Unnecessary fields are removed (id, creation date etc.)
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct CurrentCat {
+    pub name: String,
+    pub age: i16,
+    pub weight: Option<f32>,
+}
+
 /// Update Cat struct
 /// Mostly to be deserialized from json to db record
 /// All the fields are optional
