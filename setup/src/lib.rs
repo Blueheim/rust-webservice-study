@@ -1,3 +1,5 @@
+use std::env;
+
 use config::Config;
 use serde::Deserialize;
 
@@ -25,7 +27,7 @@ pub struct AppConfig {
 
 fn read_local_config() -> AppConfig {
     let config = Config::builder()
-        .add_source(config::File::with_name("setup"))
+        .add_source(config::File::with_name("setup/config"))
         .build()
         .unwrap();
 

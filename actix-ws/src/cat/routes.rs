@@ -30,7 +30,7 @@ mod tests {
         DataSource,
     };
 
-    fn test_data() -> web::Data<DataSource> {
+    fn test_data_mock() -> web::Data<DataSource> {
         web::Data::new(DataSource::mock(Some(vec![
             Cat {
                 id: CatId("1".into()),
@@ -39,7 +39,8 @@ mod tests {
                 weight: None,
                 creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
                     .unwrap()
-                    .and_hms_opt(09, 10, 11),
+                    .and_hms_opt(09, 10, 11)
+                    .unwrap(),
             },
             Cat {
                 id: CatId("2".into()),
@@ -48,7 +49,8 @@ mod tests {
                 weight: Some(3.0),
                 creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
                     .unwrap()
-                    .and_hms_opt(09, 10, 11),
+                    .and_hms_opt(09, 10, 11)
+                    .unwrap(),
             },
         ])))
     }
@@ -56,7 +58,7 @@ mod tests {
     #[actix_web::test]
     async fn test_get_all_cats() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::get()
             .uri(format!("{}/", SCOPE).as_str())
@@ -72,7 +74,7 @@ mod tests {
     #[actix_web::test]
     async fn test_get_one_cat() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::get()
             .uri(format!("{}/1/", SCOPE).as_str())
@@ -88,7 +90,7 @@ mod tests {
     #[actix_web::test]
     async fn test_post_cat() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::post()
             .uri(format!("{}/", SCOPE).as_str())
@@ -109,7 +111,7 @@ mod tests {
     #[actix_web::test]
     async fn test_patch_cat() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::patch()
             .uri(format!("{}/1/", SCOPE).as_str())
@@ -131,7 +133,7 @@ mod tests {
     #[actix_web::test]
     async fn test_put_cat() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::put()
             .uri(format!("{}/1/", SCOPE).as_str())
@@ -154,7 +156,7 @@ mod tests {
     #[actix_web::test]
     async fn test_delete_cat() {
         // Arrange
-        let data = test_data();
+        let data = test_data_mock();
         let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
         let req = test::TestRequest::delete()
             .uri(format!("{}/2/", SCOPE).as_str())

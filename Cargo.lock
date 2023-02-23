@@ -597,6 +597,7 @@ dependencies = [
  "serde",
  "serde_json",
  "setup",
+ "sqlx",
 ]
 
 [[package]]
@@ -632,6 +633,7 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "derive_more",
+ "sqlx",
 ]
 
 [[package]]

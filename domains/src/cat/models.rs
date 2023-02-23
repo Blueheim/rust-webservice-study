@@ -11,9 +11,9 @@ pub struct CatId(pub String);
 pub struct Cat {
     pub id: CatId,
     pub name: String,
-    pub age: u32,
+    pub age: i16,
     pub weight: Option<f32>,
-    pub creation_time: Option<NaiveDateTime>,
+    pub creation_time: NaiveDateTime,
 }
 
 impl Cat {
@@ -28,7 +28,7 @@ impl Cat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NewCat {
     pub name: String,
-    pub age: u32,
+    pub age: i16,
     pub weight: Option<f32>,
 }
 
@@ -38,7 +38,7 @@ pub struct NewCat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UpdateCat {
     pub name: Option<String>,
-    pub age: Option<u32>,
+    pub age: Option<i16>,
     pub weight: Option<f32>,
 }
 
@@ -47,6 +47,6 @@ pub struct UpdateCat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplaceCat {
     pub name: String,
-    pub age: u32,
+    pub age: i16,
     pub weight: Option<f32>,
 }

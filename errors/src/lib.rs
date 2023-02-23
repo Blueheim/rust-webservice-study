@@ -32,6 +32,14 @@ impl error::ResponseError for AppError {
     }
 }
 
+impl From<sqlx::Error> for AppError {
+    fn from(_err: sqlx::Error) -> Self {
+        AppError {
+            error: Errors::Server(ServerError::Internal),
+        }
+    }
+}
+
 #[derive(Debug, Display, Error)]
 pub enum ClientError {
     #[display(fmt = "Resource: {}/{} not found", resource_name, id)]

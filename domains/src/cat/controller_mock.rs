@@ -39,7 +39,8 @@ pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError>
         weight: new_cat.weight,
         creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
             .unwrap()
-            .and_hms_opt(09, 10, 11),
+            .and_hms_opt(09, 10, 11)
+            .unwrap(),
     };
     cats.push(cat.clone());
     Ok(cat)

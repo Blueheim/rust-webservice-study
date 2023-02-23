@@ -1,6 +1,6 @@
 use actix_web::{web, HttpResponse};
 use domains::{
-    controller_mock,
+    controller_db, controller_mock,
     models::{NewCat, ReplaceCat, UpdateCat},
     DataSource, SourceType,
 };
@@ -9,12 +9,13 @@ use errors::AppError;
 /// Fetch all cats
 pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {
     match &data.source {
-        SourceType::Mock(source) => {
-            let cats = controller_mock::select_all(source);
+        SourceType::Mock(data_source) => {
+            let cats = controller_mock::select_all(data_source);
             Ok(HttpResponse::Ok().json(cats))
         }
-        SourceType::DB(source) => {
-            todo!()
+        SourceType::DB(data_source) => {
+            let cats = controller_db::select_all(data_source).await?;
+            Ok(HttpResponse::Ok().json(cats))
         }
     }
 }
