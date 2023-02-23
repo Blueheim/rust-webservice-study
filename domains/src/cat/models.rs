@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 // Newtype idiom types
@@ -10,7 +11,9 @@ pub struct CatId(pub String);
 pub struct Cat {
     pub id: CatId,
     pub name: String,
-    pub weight: Option<u32>,
+    pub age: u32,
+    pub weight: Option<f32>,
+    pub creation_time: Option<NaiveDateTime>,
 }
 
 impl Cat {
@@ -25,7 +28,8 @@ impl Cat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NewCat {
     pub name: String,
-    pub weight: Option<u32>,
+    pub age: u32,
+    pub weight: Option<f32>,
 }
 
 /// Update Cat struct
@@ -34,7 +38,8 @@ pub struct NewCat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UpdateCat {
     pub name: Option<String>,
-    pub weight: Option<u32>,
+    pub age: Option<u32>,
+    pub weight: Option<f32>,
 }
 
 /// Replace Cat struct
@@ -42,5 +47,6 @@ pub struct UpdateCat {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplaceCat {
     pub name: String,
-    pub weight: Option<u32>,
+    pub age: u32,
+    pub weight: Option<f32>,
 }

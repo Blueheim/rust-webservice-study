@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use errors::{AppError, ClientError, Errors};
 
 use crate::{
@@ -34,7 +35,11 @@ pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError>
     let cat = Cat {
         id: CatId(next_id.to_string()),
         name: new_cat.name.clone(),
+        age: new_cat.age,
         weight: new_cat.weight,
+        creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
+            .unwrap()
+            .and_hms_opt(09, 10, 11),
     };
     cats.push(cat.clone());
     Ok(cat)
@@ -60,6 +65,10 @@ pub fn update_one(id: u32, update_cat: UpdateCat, source: &MockSource) -> Result
 
                 if update_cat.name.is_some() {
                     current_cat.name = update_cat.name.clone().unwrap();
+                }
+
+                if update_cat.age.is_some() {
+                    current_cat.age = update_cat.age.unwrap();
                 }
 
                 if update_cat.weight.is_some() {
@@ -91,7 +100,9 @@ pub fn replace_one(id: u32, replace_cat: ReplaceCat, source: &MockSource) -> Res
                 let cat = Cat {
                     id: CatId(id.to_string()),
                     name: replace_cat.name.clone(),
+                    age: replace_cat.age,
                     weight: replace_cat.weight,
+                    creation_time: cats[index].creation_time,
                 };
                 cats[index] = cat.clone();
                 Ok(cat)

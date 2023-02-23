@@ -24,6 +24,7 @@ mod tests {
     use super::*;
 
     use actix_web::{http::header::ContentType, test, web, App};
+    use chrono::NaiveDate;
     use domains::{
         models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
         DataSource,
@@ -34,12 +35,20 @@ mod tests {
             Cat {
                 id: CatId("1".into()),
                 name: "A".into(),
+                age: 1,
                 weight: None,
+                creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
+                    .unwrap()
+                    .and_hms_opt(09, 10, 11),
             },
             Cat {
                 id: CatId("2".into()),
                 name: "B".into(),
-                weight: Some(3),
+                age: 1,
+                weight: Some(3.0),
+                creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
+                    .unwrap()
+                    .and_hms_opt(09, 10, 11),
             },
         ])))
     }
@@ -85,6 +94,7 @@ mod tests {
             .uri(format!("{}/", SCOPE).as_str())
             .set_json(NewCat {
                 name: "C".into(),
+                age: 2,
                 weight: None,
             })
             .to_request();
@@ -105,7 +115,8 @@ mod tests {
             .uri(format!("{}/1/", SCOPE).as_str())
             .set_json(UpdateCat {
                 name: None,
-                weight: Some(7),
+                age: Some(3),
+                weight: Some(7.5),
             })
             .to_request();
 
@@ -114,7 +125,7 @@ mod tests {
 
         // Assert
         assert_eq!(resp.name, "A".to_string());
-        assert_eq!(resp.weight.unwrap(), 7);
+        assert_eq!(resp.weight.unwrap(), 7.5);
     }
 
     #[actix_web::test]
@@ -126,7 +137,8 @@ mod tests {
             .uri(format!("{}/1/", SCOPE).as_str())
             .set_json(ReplaceCat {
                 name: "Z".into(),
-                weight: Some(5),
+                age: 5,
+                weight: Some(5.4),
             })
             .to_request();
 
@@ -135,7 +147,8 @@ mod tests {
 
         // Assert
         assert_eq!(resp.name, "Z".to_string());
-        assert_eq!(resp.weight.unwrap(), 5);
+        assert_eq!(resp.age, 5);
+        assert_eq!(resp.weight.unwrap(), 5.4);
     }
 
     #[actix_web::test]

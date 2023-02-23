@@ -14,4 +14,5 @@ serde_json = { workspace = true }
 derive_more = { workspace = true }
 dotenv = { workspace = true }
 async-trait = { workspace = true }
+chrono = { workspace = true }
 actix-web = { workspace = true }

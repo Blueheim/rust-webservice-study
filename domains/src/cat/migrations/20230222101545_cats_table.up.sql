@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS cats (
     name VARCHAR (140) not null,
     age smallint not null,
     weight real,
-    created_on TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_on TIMESTAMP NOT NULL DEFAULT NOW()
 ); 
