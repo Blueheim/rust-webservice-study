@@ -15,7 +15,7 @@ pub struct Cat {
 
 impl Cat {
     pub fn mock_data() -> Vec<Self> {
-        let file = include_str!("cats.json");
+        let file = include_str!("./mock/cats.json");
         serde_json::from_str(file).expect("can't read cats.json")
     }
 }

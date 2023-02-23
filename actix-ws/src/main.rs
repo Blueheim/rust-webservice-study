@@ -6,7 +6,6 @@ use std::io;
 use app::WebServiceApp;
 
 mod app;
-mod errors;
 mod server;
 
 mod cat;

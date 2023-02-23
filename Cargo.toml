@@ -10,6 +10,7 @@ members = ["actix-ws", "warp-ws", "axum-ws"]
 [workspace.dependencies]
 domains = { path = "domains" }
 setup = { path = "setup" }
+errors = { path = "errors" }
 
 # Data serialization libraries
 serde = { version = "1.0.152", features = ["derive"] }
@@ -19,6 +20,10 @@ serde_json = "1.0.93"
 derive_more = "0.99.17"
 dotenv = "0.15.0"
 async-trait = "0.1.64"
+
+# Web Servers
+# Actix web core
+actix-web = "4.3.0"
 
 # DB Access library
 sqlx = {version = "0.6.2", default_features = false, features = ["postgres","runtime-tokio-native-tls", "macros","chrono"]}
