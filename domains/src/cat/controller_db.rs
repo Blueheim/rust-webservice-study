@@ -136,7 +136,6 @@ pub async fn replace_one(
 }
 
 pub async fn delete_one(id: i32, source: &DBSource) -> Result<String, AppError> {
-    // Prepare SQL statement
     let result = sqlx::query!("DELETE FROM cats WHERE id = $1", id)
         .execute(&source.db.connection)
         .await?;

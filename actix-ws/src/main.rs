@@ -3,9 +3,6 @@ use dotenv;
 use std::env;
 use std::io;
 
-use app::WebServiceApp;
-
-mod app;
 mod server;
 
 mod cat;
@@ -22,6 +19,9 @@ async fn main() -> io::Result<()> {
     // Load .env file
     dotenv::dotenv().ok();
 
+    // Init logger
+    env_logger::init();
+
     // Data source definition
     let data_source = if let Ok(_) = env::var("MOCK") {
         DataSource::mock(None)
@@ -29,9 +29,6 @@ async fn main() -> io::Result<()> {
         DataSource::db().await
     };
 
-    // Construct app
-    let web_app = WebServiceApp::new(data_source);
-
     // Start server app
-    server::start(web_app).await
+    server::start(data_source).await
 }

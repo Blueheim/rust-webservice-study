@@ -16,3 +16,5 @@ dotenv = { workspace = true }
 async-trait = { workspace = true }
 chrono = { workspace = true }
 actix-web = { workspace = true }
+log = { workspace = true }
+env_logger = { workspace = true }
