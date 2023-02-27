@@ -155,9 +155,9 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Vec<Cat> = test::call_and_read_body_json(&app, req).await;
+        let resp: String = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.len(), 1);
+        assert_eq!(resp.is_empty(), false);
     }
 }

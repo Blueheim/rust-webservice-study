@@ -1,5 +1,10 @@
-use std::sync::RwLock;
+use std::{
+    future::{Future, IntoFuture},
+    pin::Pin,
+    sync::RwLock,
+};
 
+use errors::AppError;
 use setup::DBStore;
 
 use crate::{account::models::Account, cat::models::Cat};
@@ -7,7 +12,7 @@ use crate::{account::models::Account, cat::models::Cat};
 #[derive(Debug)]
 pub enum SourceType {
     Mock(MockSource),
-    DB(DBSource),
+    DB(DbSource),
 }
 
 #[derive(Debug)]
@@ -26,7 +31,21 @@ impl DataSource {
     }
     pub async fn db() -> Self {
         Self {
-            source: SourceType::DB(DBSource::new().await),
+            source: SourceType::DB(DbSource::new().await),
+        }
+    }
+    pub fn exec_controller<'a, T, M, N>(
+        &'a self,
+        mock_fn: M,
+        db_fn: N,
+    ) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>
+    where
+        M: Fn(&'a MockSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>,
+        N: Fn(&'a DbSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>,
+    {
+        match &self.source {
+            SourceType::Mock(data_source) => mock_fn(data_source),
+            SourceType::DB(data_source) => db_fn(data_source),
         }
     }
 }
@@ -53,13 +72,13 @@ impl MockSource {
 }
 
 #[derive(Debug)]
-pub struct DBSource {
+pub struct DbSource {
     pub db: DBStore,
 }
 
-impl DBSource {
+impl DbSource {
     pub async fn new() -> Self {
-        DBSource {
+        DbSource {
             db: setup::create_postgres_store().await,
         }
     }

@@ -2,10 +2,10 @@ use errors::AppError;
 
 use crate::{
     cat::models::{Cat, CatId, CurrentCat, NewCat, ReplaceCat, UpdateCat},
-    data_source::DBSource,
+    data_source::DbSource,
 };
 
-pub async fn select_all(source: &DBSource) -> Result<Vec<Cat>, AppError> {
+pub async fn select_all(source: &DbSource) -> Result<Vec<Cat>, AppError> {
     let cats: Vec<Cat> = sqlx::query!("SELECT * FROM cats")
         .map(|row| Cat {
             id: CatId(row.id.to_string()),
@@ -20,7 +20,7 @@ pub async fn select_all(source: &DBSource) -> Result<Vec<Cat>, AppError> {
     Ok(cats)
 }
 
-pub async fn select_one(id: i32, source: &DBSource) -> Result<Cat, AppError> {
+pub async fn select_one(id: i32, source: &DbSource) -> Result<Cat, AppError> {
     let cat: Cat = sqlx::query!("SELECT * FROM cats WHERE id = $1", id)
         .map(|row| Cat {
             id: CatId(row.id.to_string()),
@@ -35,7 +35,7 @@ pub async fn select_one(id: i32, source: &DBSource) -> Result<Cat, AppError> {
     Ok(cat)
 }
 
-pub async fn create_one(new_cat: NewCat, source: &DBSource) -> Result<Cat, AppError> {
+pub async fn create_one(new_cat: NewCat, source: &DbSource) -> Result<Cat, AppError> {
     let cat: Cat = sqlx::query!(
         "INSERT INTO cats (name, age, weight) 
          VALUES ($1, $2, $3) 
@@ -60,7 +60,7 @@ pub async fn create_one(new_cat: NewCat, source: &DBSource) -> Result<Cat, AppEr
 pub async fn update_one(
     id: i32,
     update_cat: UpdateCat,
-    source: &DBSource,
+    source: &DbSource,
 ) -> Result<Cat, AppError> {
     // Retrieve current data
     let current_cat = sqlx::query_as!(
@@ -111,7 +111,7 @@ pub async fn update_one(
 pub async fn replace_one(
     id: i32,
     replace_cat: ReplaceCat,
-    source: &DBSource,
+    source: &DbSource,
 ) -> Result<Cat, AppError> {
     let cat: Cat = sqlx::query!(
         "UPDATE cats SET name = $1, age = $2, weight = $3  
@@ -135,7 +135,7 @@ pub async fn replace_one(
     Ok(cat)
 }
 
-pub async fn delete_one(id: i32, source: &DBSource) -> Result<String, AppError> {
+pub async fn delete_one(id: i32, source: &DbSource) -> Result<String, AppError> {
     let result = sqlx::query!("DELETE FROM cats WHERE id = $1", id)
         .execute(&source.db.connection)
         .await?;

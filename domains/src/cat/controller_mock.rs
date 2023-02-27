@@ -6,11 +6,11 @@ use crate::{
     data_source::MockSource,
 };
 
-pub fn select_all(source: &MockSource) -> Vec<Cat> {
-    source.cats.read().unwrap().to_vec()
+pub async fn select_all(source: &MockSource) -> Result<Vec<Cat>, AppError> {
+    Ok(source.cats.read().unwrap().to_vec())
 }
 
-pub fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
+pub async fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
     let cats = source.cats.read().unwrap();
 
     cats.clone()
@@ -29,7 +29,7 @@ pub fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
         )
 }
 
-pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError> {
+pub async fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError> {
     let mut cats = source.cats.write().unwrap();
     let next_id = cats.len() + 1;
     let cat = Cat {
@@ -43,7 +43,11 @@ pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError>
     Ok(cat)
 }
 
-pub fn update_one(id: i32, update_cat: UpdateCat, source: &MockSource) -> Result<Cat, AppError> {
+pub async fn update_one(
+    id: i32,
+    update_cat: UpdateCat,
+    source: &MockSource,
+) -> Result<Cat, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()
@@ -79,7 +83,11 @@ pub fn update_one(id: i32, update_cat: UpdateCat, source: &MockSource) -> Result
         )
 }
 
-pub fn replace_one(id: i32, replace_cat: ReplaceCat, source: &MockSource) -> Result<Cat, AppError> {
+pub async fn replace_one(
+    id: i32,
+    replace_cat: ReplaceCat,
+    source: &MockSource,
+) -> Result<Cat, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()
@@ -108,7 +116,7 @@ pub fn replace_one(id: i32, replace_cat: ReplaceCat, source: &MockSource) -> Res
         )
 }
 
-pub fn delete_one(id: i32, source: &MockSource) -> Result<Vec<Cat>, AppError> {
+pub async fn delete_one(id: i32, source: &MockSource) -> Result<String, AppError> {
     let mut cats = source.cats.write().unwrap();
 
     cats.clone()
@@ -125,7 +133,7 @@ pub fn delete_one(id: i32, source: &MockSource) -> Result<Vec<Cat>, AppError> {
             },
             |index| {
                 cats.remove(index);
-                Ok(cats.to_vec())
+                Ok("1 row deleted".to_string())
             },
         )
 }

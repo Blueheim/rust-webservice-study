@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": "b8213d90-bfa5-43bd-a2d2-df94641f4176",
+    "email": "test@mail.com",
+    "password": "$argon2id$v=19$m=4096,t=3,p=1$FPDGIZQ5GJwyDFcgcSURPg$0nTJ5Nr+vPFiPugqbCiq4Z/9KfvlgREGr+jxayPuaOk",
+    "role": "member",
+    "verified": false,
+    "creation_time": "2023-02-27T19:23:33.834119023Z",
+    "last_modification_time": null
+  }
+]
