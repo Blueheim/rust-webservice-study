@@ -4,9 +4,9 @@ use actix_web::{
     middleware::{self, Logger, NormalizePath},
     web, App, HttpServer,
 };
-use domains::DataSource;
+use domains::data_source::DataSource;
 
-use crate::cat;
+use crate::{auth, base, cat};
 
 const ADDR: &str = "127.0.0.1:3000";
 
@@ -29,7 +29,12 @@ pub async fn start(data_source: DataSource) -> io::Result<()> {
             // .app_data(web::JsonConfig::default().error_handler(|err, _req| {
             //     error::InternalError::from_response(err, HttpResponse::Conflict().into()).into()
             // }))
-            .service(web::scope("/api").configure(cat::routes::routes))
+            .service(
+                web::scope("/api")
+                    .configure(base::routes::routes)
+                    .configure(auth::routes::routes)
+                    .configure(cat::routes::routes),
+            )
     })
     .bind(ADDR)?
     .run()

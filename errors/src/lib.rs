@@ -27,6 +27,9 @@ impl error::ResponseError for AppError {
     fn status_code(&self) -> StatusCode {
         match self.error {
             Errors::Client(ClientError::ResourceNotFound { .. }) => StatusCode::NOT_FOUND,
+            Errors::Client(ClientError::BadRequest { .. }) => StatusCode::BAD_REQUEST,
+            Errors::Client(ClientError::Unauthorized { .. }) => StatusCode::UNAUTHORIZED,
+            Errors::Client(ClientError::Conflict { .. }) => StatusCode::CONFLICT,
             Errors::Server(ServerError::Internal) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -44,6 +47,12 @@ impl From<sqlx::Error> for AppError {
 pub enum ClientError {
     #[display(fmt = "Resource: {}/{} not found", resource_name, id)]
     ResourceNotFound { resource_name: String, id: String },
+    #[display(fmt = "{}", reason)]
+    BadRequest { reason: String },
+    #[display(fmt = "Access denied. {}", reason)]
+    Unauthorized { reason: String },
+    #[display(fmt = "{}", reason)]
+    Conflict { reason: String },
 }
 
 #[derive(Debug, Display, Error)]

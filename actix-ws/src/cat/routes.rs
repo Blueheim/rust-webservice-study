@@ -1,8 +1,6 @@
 use actix_web::web::{self, ServiceConfig};
 
-use super::handlers::{
-    add_new_cat, fetch_all_cats, fetch_one_cat, modify_cat, remove_cat, replace_cat,
-};
+use super::handlers;
 
 pub const SCOPE: &str = "/cats";
 
@@ -10,12 +8,12 @@ pub const SCOPE: &str = "/cats";
 pub fn routes(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope(SCOPE)
-            .route("/", web::get().to(fetch_all_cats))
-            .route("/{cat_id}/", web::get().to(fetch_one_cat))
-            .route("/", web::post().to(add_new_cat))
-            .route("/{cat_id}/", web::patch().to(modify_cat))
-            .route("/{cat_id}/", web::put().to(replace_cat))
-            .route("/{cat_id}/", web::delete().to(remove_cat)),
+            .route("/", web::get().to(handlers::fetch_all_cats))
+            .route("/{cat_id}/", web::get().to(handlers::fetch_one_cat))
+            .route("/", web::post().to(handlers::add_new_cat))
+            .route("/{cat_id}/", web::patch().to(handlers::modify_cat))
+            .route("/{cat_id}/", web::put().to(handlers::replace_cat))
+            .route("/{cat_id}/", web::delete().to(handlers::remove_cat)),
     );
 }
 
@@ -26,8 +24,8 @@ mod tests {
     use actix_web::{http::header::ContentType, test, web, App};
     use chrono::NaiveDate;
     use domains::{
-        models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
-        DataSource,
+        cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
+        data_source::DataSource,
     };
 
     fn test_data_mock() -> web::Data<DataSource> {

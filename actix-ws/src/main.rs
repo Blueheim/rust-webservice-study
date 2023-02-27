@@ -1,11 +1,14 @@
-use domains::DataSource;
+use domains::data_source::DataSource;
 use dotenv;
 use std::env;
 use std::io;
 
 mod server;
 
+mod auth;
+mod base;
 mod cat;
+mod middlewares;
 
 /// Actix HTTP server
 /// uses multi-threading concurrency by starting multiple worker threads on startup
@@ -17,15 +20,19 @@ mod cat;
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     // Load .env file
-    dotenv::dotenv().ok();
+    dotenv::from_path("actix-ws/.env").ok();
+
+    println!("{}", env::current_dir().unwrap().display());
 
     // Init logger
     env_logger::init();
 
     // Data source definition
-    let data_source = if let Ok(_) = env::var("MOCK") {
+    let data_source = if let Ok(_) = env::var("MOCK_DATA") {
+        println!("📄 Data source set to mock");
         DataSource::mock(None)
     } else {
+        println!("🛢️ Data source set to db");
         DataSource::db().await
     };
 

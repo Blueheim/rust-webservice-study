@@ -1,8 +1,10 @@
 use actix_web::{web, HttpResponse};
 use domains::{
-    controller_db, controller_mock,
-    models::{NewCat, ReplaceCat, UpdateCat},
-    DataSource, SourceType,
+    cat::{
+        controller_db, controller_mock,
+        models::{NewCat, ReplaceCat, UpdateCat},
+    },
+    data_source::{DataSource, SourceType},
 };
 use errors::AppError;
 

@@ -1,8 +1,8 @@
 use errors::AppError;
 
 use crate::{
-    models::{Cat, CatId, CurrentCat, NewCat, ReplaceCat, UpdateCat},
-    DBSource,
+    cat::models::{Cat, CatId, CurrentCat, NewCat, ReplaceCat, UpdateCat},
+    data_source::DBSource,
 };
 
 pub async fn select_all(source: &DBSource) -> Result<Vec<Cat>, AppError> {

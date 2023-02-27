@@ -2,7 +2,7 @@ use std::sync::RwLock;
 
 use setup::DBStore;
 
-use crate::models::Cat;
+use crate::{account::models::Account, cat::models::Cat};
 
 #[derive(Debug)]
 pub enum SourceType {
@@ -33,17 +33,20 @@ impl DataSource {
 
 #[derive(Debug)]
 pub struct MockSource {
+    pub accounts: RwLock<Vec<Account>>,
     pub cats: RwLock<Vec<Cat>>,
 }
 
 impl MockSource {
     pub fn new() -> Self {
         MockSource {
+            accounts: RwLock::new(Account::mock_data()),
             cats: RwLock::new(Cat::mock_data()),
         }
     }
     pub fn from(cats: Vec<Cat>) -> Self {
         MockSource {
+            accounts: RwLock::new(vec![]), // TODO
             cats: RwLock::new(cats),
         }
     }

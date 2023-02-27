@@ -2,8 +2,8 @@ use chrono::NaiveDate;
 use errors::{AppError, ClientError, Errors};
 
 use crate::{
-    models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
-    MockSource,
+    cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
+    data_source::MockSource,
 };
 
 pub fn select_all(source: &MockSource) -> Vec<Cat> {

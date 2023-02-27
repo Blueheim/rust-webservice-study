@@ -18,3 +18,5 @@ chrono = { workspace = true }
 actix-web = { workspace = true }
 log = { workspace = true }
 env_logger = { workspace = true }
+jsonwebtoken = { workspace = true }
+uuid = { workspace = true }

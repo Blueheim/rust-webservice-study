@@ -8,3 +8,7 @@ edition = "2021"
 config ={ verion="0.13.3", features = ["toml"]}
 serde = { workspace= true }
 sqlx = { workspace= true }
+errors = { workspace= true }
+jsonwebtoken = { workspace= true }
+argon2 = { workspace= true }
+lazy_static = { workspace= true }
