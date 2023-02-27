@@ -22,7 +22,7 @@ mod tests {
     use super::*;
 
     use actix_web::{http::header::ContentType, test, web, App};
-    use chrono::NaiveDate;
+    use chrono::{NaiveDate, Utc};
     use domains::{
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
         data_source::DataSource,
@@ -35,20 +35,14 @@ mod tests {
                 name: "A".into(),
                 age: 1,
                 weight: None,
-                creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
-                    .unwrap()
-                    .and_hms_opt(09, 10, 11)
-                    .unwrap(),
+                creation_time: Utc::now(),
             },
             Cat {
                 id: CatId("2".into()),
                 name: "B".into(),
                 age: 1,
                 weight: Some(3.0),
-                creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
-                    .unwrap()
-                    .and_hms_opt(09, 10, 11)
-                    .unwrap(),
+                creation_time: Utc::now(),
             },
         ])))
     }

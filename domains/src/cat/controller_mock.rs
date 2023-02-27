@@ -1,4 +1,4 @@
-use chrono::NaiveDate;
+use chrono::Utc;
 use errors::{AppError, ClientError, Errors};
 
 use crate::{
@@ -37,10 +37,7 @@ pub fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError>
         name: new_cat.name.clone(),
         age: new_cat.age,
         weight: new_cat.weight,
-        creation_time: NaiveDate::from_ymd_opt(2023, 02, 23)
-            .unwrap()
-            .and_hms_opt(09, 10, 11)
-            .unwrap(),
+        creation_time: Utc::now(),
     };
     cats.push(cat.clone());
     Ok(cat)

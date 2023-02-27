@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 // Newtype idiom types
@@ -13,7 +13,7 @@ pub struct Cat {
     pub name: String,
     pub age: i16,
     pub weight: Option<f32>,
-    pub creation_time: NaiveDateTime,
+    pub creation_time: DateTime<Utc>,
 }
 
 impl Cat {

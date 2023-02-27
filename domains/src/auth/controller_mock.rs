@@ -1,3 +1,4 @@
+use chrono::Utc;
 use errors::{AppError, ClientError, Errors};
 
 use crate::{
@@ -35,7 +36,7 @@ pub fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account,
         password: hashed_password,
         role: "member".into(),
         verified: false,
-        creation_time: None,
+        creation_time: Utc::now(),
         last_modification_time: None,
     };
 

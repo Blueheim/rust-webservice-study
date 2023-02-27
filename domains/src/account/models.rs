@@ -11,7 +11,7 @@ pub struct Account {
     pub password: String,
     pub role: String,
     pub verified: bool,
-    pub creation_time: Option<DateTime<Utc>>,
+    pub creation_time: DateTime<Utc>,
     pub last_modification_time: Option<DateTime<Utc>>,
 }
 

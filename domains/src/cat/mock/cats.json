@@ -5,19 +5,5 @@
     "age": 9,
     "weight": 4.5,
     "creation_time": "2023-02-23T09:10:11.012Z"
-  },
-  {
-    "id": "2",
-    "name": "Bella",
-    "age": 4,
-    "weight": 2.2,
-    "creation_time": "2023-02-23T09:10:11.012Z"
-  },
-  {
-    "id": "3",
-    "name": "Gizmo",
-    "age": 7,
-    "weight": 3,
-    "creation_time": "2023-02-23T09:10:11.012Z"
   }
 ]
