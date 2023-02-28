@@ -7,6 +7,7 @@ use domains::{
     data_source::DataSource,
 };
 use errors::AppError;
+use setup::{InfoPayload, SuccessPayload};
 
 /// Fetch all cats
 pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {
@@ -17,7 +18,7 @@ pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse,
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(cats))
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: cats }))
 }
 
 /// Fetch one cat
@@ -34,7 +35,7 @@ pub async fn fetch_one_cat(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(cat))
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: cat }))
 }
 
 /// Add new cat
@@ -49,7 +50,7 @@ pub async fn add_new_cat(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(cat))
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: cat }))
 }
 
 /// Modify existing cat
@@ -79,7 +80,7 @@ pub async fn modify_cat(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(cat))
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: cat }))
 }
 
 /// Replace existing cat
@@ -109,7 +110,7 @@ pub async fn replace_cat(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(cat))
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: cat }))
 }
 
 /// Delete existing cat
@@ -126,5 +127,5 @@ pub async fn remove_cat(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(result))
+    Ok(HttpResponse::Ok().json(InfoPayload { message: result }))
 }

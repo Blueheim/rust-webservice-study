@@ -1,10 +1,12 @@
 #[macro_use]
 extern crate lazy_static;
 
+mod api;
 mod app_config;
 mod db_store;
 mod jwt;
 
+pub use api::*;
 pub use db_store::*;
 pub use jwt::*;
 

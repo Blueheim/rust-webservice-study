@@ -11,6 +11,7 @@ use domains::{
 };
 use errors::AppError;
 use serde_json::json;
+use setup::{AuthPayload, SuccessPayload};
 
 pub async fn sign_up(
     auth: web::Json<SignUpAuth>,
@@ -23,7 +24,8 @@ pub async fn sign_up(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(account))
+    // TODO: Create a type without sensible data
+    Ok(HttpResponse::Ok().json(SuccessPayload { data: account }))
 }
 
 pub async fn sign_in(
@@ -45,5 +47,5 @@ pub async fn sign_in(
 
     Ok(HttpResponse::Ok()
         .cookie(cookie)
-        .json(json!({ "token": token })))
+        .json(AuthPayload { token }))
 }

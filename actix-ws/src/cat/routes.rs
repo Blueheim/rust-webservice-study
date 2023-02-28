@@ -27,6 +27,7 @@ mod tests {
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
         data_source::DataSource,
     };
+    use setup::{InfoPayload, SuccessPayload};
 
     fn test_data_mock() -> web::Data<DataSource> {
         web::Data::new(DataSource::mock(Some(vec![
@@ -57,10 +58,10 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Vec<Cat> = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<Vec<Cat>> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.len(), 2);
+        assert_eq!(resp.data.len(), 2);
     }
 
     #[actix_web::test]
@@ -73,10 +74,10 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.id.0, "1".to_string());
+        assert_eq!(resp.data.id.0, "1".to_string());
     }
 
     #[actix_web::test]
@@ -94,10 +95,10 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.id.0, "3".to_string());
+        assert_eq!(resp.data.id.0, "3".to_string());
     }
 
     #[actix_web::test]
@@ -115,11 +116,11 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.name, "A".to_string());
-        assert_eq!(resp.weight.unwrap(), 7.5);
+        assert_eq!(resp.data.name, "A".to_string());
+        assert_eq!(resp.data.weight.unwrap(), 7.5);
     }
 
     #[actix_web::test]
@@ -137,12 +138,12 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: Cat = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.name, "Z".to_string());
-        assert_eq!(resp.age, 5);
-        assert_eq!(resp.weight.unwrap(), 5.4);
+        assert_eq!(resp.data.name, "Z".to_string());
+        assert_eq!(resp.data.age, 5);
+        assert_eq!(resp.data.weight.unwrap(), 5.4);
     }
 
     #[actix_web::test]
@@ -155,9 +156,9 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: String = test::call_and_read_body_json(&app, req).await;
+        let resp: InfoPayload = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.is_empty(), false);
+        assert_eq!(resp.message.is_empty(), false);
     }
 }

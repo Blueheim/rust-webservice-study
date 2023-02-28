@@ -13,3 +13,4 @@ jsonwebtoken = { workspace= true }
 argon2 = { workspace= true }
 lazy_static = { workspace= true }
 chrono = { workspace= true }
+serde_json = { workspace= true }
