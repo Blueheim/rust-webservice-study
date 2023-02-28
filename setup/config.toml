@@ -7,5 +7,6 @@ database_password = "dev"
 database_host = "localhost"
 database_port = 5432
 database_name = "wsstudy"
-port = 3000
+server_host = "127.0.0.1"
+server_port = 3000
 jwt_secret="jwt_secret_12345"

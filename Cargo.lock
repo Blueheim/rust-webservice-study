@@ -697,7 +697,9 @@ name = "errors"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "argon2",
  "derive_more",
+ "jsonwebtoken",
  "sqlx",
 ]
 
@@ -1744,6 +1746,7 @@ name = "setup"
 version = "0.1.0"
 dependencies = [
  "argon2",
+ "chrono",
  "config",
  "errors",
  "jsonwebtoken",

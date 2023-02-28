@@ -15,8 +15,11 @@ pub struct AppConfig {
     pub database_port: u16,
     /// Database name
     pub database_name: String,
+    /// Web server host
+    pub server_host: String,
     /// Web server port
-    pub port: u16,
+    pub server_port: u16,
+    /// Jwt token
     pub jwt_secret: String,
 }
 
@@ -30,6 +33,10 @@ impl AppConfig {
         let config = config.try_deserialize::<Self>().unwrap();
 
         config
+    }
+
+    pub fn format_server_url(&self) -> String {
+        format!("{}:{}", self.server_host, self.server_port,)
     }
 
     pub fn format_pg_db_url(&self) -> String {

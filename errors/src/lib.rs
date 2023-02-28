@@ -1,6 +1,12 @@
 use actix_web::{error, http::StatusCode, HttpResponse};
 use derive_more::{Display, Error};
 
+pub mod messages {
+    pub const PASSWORD_CONFIRMATION_MISMATCH: &str = "Password and confirmation don't match";
+    pub const ACCOUNT_EXISTING: &str = "Account already existing for that email";
+    pub const EMAIL_PASSWORD_INVALID: &str = "Invalid email or password";
+}
+
 #[derive(Debug, Display)]
 pub enum Errors {
     Client(ClientError),
@@ -39,6 +45,28 @@ impl From<sqlx::Error> for AppError {
     fn from(_err: sqlx::Error) -> Self {
         AppError {
             error: Errors::Server(ServerError::Internal),
+        }
+    }
+}
+impl From<jsonwebtoken::errors::Error> for AppError {
+    fn from(_err: jsonwebtoken::errors::Error) -> Self {
+        AppError {
+            error: Errors::Server(ServerError::Internal),
+        }
+    }
+}
+
+impl From<argon2::password_hash::Error> for AppError {
+    fn from(err: argon2::password_hash::Error) -> Self {
+        match err {
+            argon2::password_hash::Error::Password => AppError {
+                error: Errors::Client(ClientError::BadRequest {
+                    reason: messages::EMAIL_PASSWORD_INVALID.into(),
+                }),
+            },
+            _ => AppError {
+                error: Errors::Server(ServerError::Internal),
+            },
         }
     }
 }

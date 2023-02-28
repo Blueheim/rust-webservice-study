@@ -1,17 +1,20 @@
+use std::env;
+
 use chrono::Utc;
-use errors::{AppError, ClientError, Errors};
+use errors::{messages, AppError, ClientError, Errors};
+use setup::Claims;
 
 use crate::{
     account::models::{Account, AccountId},
     data_source::MockSource,
 };
 
-use super::models::SignUpAuth;
+use super::models::{SignInAuth, SignUpAuth};
 
-pub fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account, AppError> {
+pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account, AppError> {
     if sign_up_auth.password != sign_up_auth.confirmation {
         return Err(AppError::new(Errors::Client(ClientError::BadRequest {
-            reason: "Password and confirmation don't match".into(),
+            reason: messages::EMAIL_PASSWORD_INVALID.into(),
         })));
     }
 
@@ -24,7 +27,7 @@ pub fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account,
 
     if account_exist.is_some() {
         return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: "Account already existing for that email".into(),
+            reason: messages::ACCOUNT_EXISTING.into(),
         })));
     }
 
@@ -43,4 +46,27 @@ pub fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account,
     accounts.push(account.to_owned());
 
     Ok(account)
+}
+
+pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<String, AppError> {
+    let accounts = source.accounts.read().unwrap();
+
+    let existing_account = accounts
+        .clone()
+        .into_iter()
+        .find(|account| sign_in_auth.email == account.email);
+
+    if existing_account.is_none() {
+        return Err(AppError::new(Errors::Client(ClientError::Conflict {
+            reason: messages::EMAIL_PASSWORD_INVALID.into(),
+        })));
+    }
+
+    let account = existing_account.unwrap();
+
+    setup::verify_password(&account.password, sign_in_auth.password)?;
+
+    let token = setup::encode_token(account.id.0.to_string())?;
+
+    Ok(token)
 }

@@ -8,14 +8,14 @@ use domains::data_source::DataSource;
 
 use crate::{auth, base, cat};
 
-const ADDR: &str = "127.0.0.1:3000";
-
 /// Start HTTP server
 pub async fn start(data_source: DataSource) -> io::Result<()> {
     // web::Data will wrap our data into an Arc
     let data = web::Data::new(data_source);
 
-    println!("🚀 Server listening on: {}", ADDR);
+    let addr = setup::setup_config::config.format_server_url();
+
+    println!("🚀 Server listening on: {}", &addr);
 
     // HttpServer constructs an application instance for each thread
     HttpServer::new(move || {
@@ -36,7 +36,7 @@ pub async fn start(data_source: DataSource) -> io::Result<()> {
                     .configure(cat::routes::routes),
             )
     })
-    .bind(ADDR)?
+    .bind(addr)?
     .run()
     .await
 }
