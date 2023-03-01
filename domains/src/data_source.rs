@@ -21,10 +21,10 @@ pub struct DataSource {
 }
 
 impl DataSource {
-    pub fn mock(data: Option<Vec<Cat>>) -> Self {
+    pub fn mock(data: Option<MockSource>) -> Self {
         Self {
             source: match data {
-                Some(d) => SourceType::Mock(MockSource::from(d)),
+                Some(d) => SourceType::Mock(d),
                 None => SourceType::Mock(MockSource::new()),
             },
         }
@@ -50,7 +50,12 @@ impl DataSource {
     }
 }
 
-#[derive(Debug)]
+pub enum MockData {
+    Cat(Vec<Cat>),
+    Account(Vec<Account>),
+}
+
+#[derive(Debug, Default)]
 pub struct MockSource {
     pub accounts: RwLock<Vec<Account>>,
     pub cats: RwLock<Vec<Cat>>,
@@ -63,11 +68,12 @@ impl MockSource {
             cats: RwLock::new(Cat::mock_data()),
         }
     }
-    pub fn from(cats: Vec<Cat>) -> Self {
-        MockSource {
-            accounts: RwLock::new(vec![]), // TODO
-            cats: RwLock::new(cats),
+    pub fn set(mut self, data: MockData) -> Self {
+        match data {
+            MockData::Cat(d) => self.cats = RwLock::new(d),
+            MockData::Account(d) => self.accounts = RwLock::new(d),
         }
+        self
     }
 }
 

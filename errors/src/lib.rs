@@ -1,4 +1,4 @@
-use actix_web::{error, http::StatusCode, HttpResponse};
+use actix_web::{error, http::StatusCode, App, HttpResponse};
 use common::ErrorPayload;
 use derive_more::{Display, Error};
 
@@ -41,7 +41,16 @@ impl error::ResponseError for AppError {
             Errors::Client(ClientError::BadRequest { .. }) => StatusCode::BAD_REQUEST,
             Errors::Client(ClientError::Unauthorized { .. }) => StatusCode::UNAUTHORIZED,
             Errors::Client(ClientError::Conflict { .. }) => StatusCode::CONFLICT,
+            Errors::Client(ClientError::InvalidId) => StatusCode::UNPROCESSABLE_ENTITY,
             Errors::Server(ServerError::Internal) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
+
+impl From<uuid::Error> for AppError {
+    fn from(_err: uuid::Error) -> Self {
+        AppError {
+            error: Errors::Client(ClientError::InvalidId),
         }
     }
 }
@@ -78,7 +87,7 @@ impl From<argon2::password_hash::Error> for AppError {
 
 #[derive(Debug, Display, Error)]
 pub enum ClientError {
-    #[display(fmt = "Resource: {}/{} not found", resource_name, id)]
+    #[display(fmt = "Resource: {}/{} not found.", resource_name, id)]
     ResourceNotFound { resource_name: String, id: String },
     #[display(fmt = "{}", reason)]
     BadRequest { reason: String },
@@ -86,6 +95,8 @@ pub enum ClientError {
     Unauthorized { reason: String },
     #[display(fmt = "{}", reason)]
     Conflict { reason: String },
+    #[display(fmt = "Invalid Id provided.")]
+    InvalidId,
 }
 
 #[derive(Debug, Display, Error)]

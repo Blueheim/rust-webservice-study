@@ -1,8 +1,23 @@
+use std::str::FromStr;
+
 use chrono::{DateTime, Utc};
+use errors::{AppError, ClientError, Errors};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AccountId(pub uuid::Uuid);
+pub struct AccountId(pub Uuid);
+
+impl FromStr for AccountId {
+    type Err = AppError;
+
+    fn from_str(id: &str) -> Result<Self, AppError> {
+        match id.is_empty() {
+            false => Ok(AccountId(Uuid::try_parse(id)?)),
+            true => Err(AppError::new(Errors::Client(ClientError::InvalidId))),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Account {

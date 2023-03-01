@@ -26,11 +26,11 @@ mod tests {
     use common::{InfoPayload, SuccessPayload};
     use domains::{
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
-        data_source::DataSource,
+        data_source::{DataSource, MockData, MockSource},
     };
 
     fn test_data_mock() -> web::Data<DataSource> {
-        web::Data::new(DataSource::mock(Some(vec![
+        let data = MockSource::default().set(MockData::Cat(vec![
             Cat {
                 id: CatId("1".into()),
                 name: "A".into(),
@@ -45,7 +45,8 @@ mod tests {
                 weight: Some(3.0),
                 creation_time: Utc::now(),
             },
-        ])))
+        ]));
+        web::Data::new(DataSource::mock(Some(data)))
     }
 
     #[actix_web::test]

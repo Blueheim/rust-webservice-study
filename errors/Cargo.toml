@@ -11,3 +11,4 @@ actix-web = { workspace = true }
 argon2 = { workspace = true }
 jsonwebtoken = { workspace = true }
 common = { workspace = true }
+uuid = { workspace = true }
