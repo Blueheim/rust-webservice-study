@@ -13,6 +13,8 @@ use errors::AppError;
 use serde_json::json;
 use setup::{AuthPayload, SuccessPayload};
 
+use crate::middlewares::auth::JwtMiddleware;
+
 pub async fn sign_up(
     auth: web::Json<SignUpAuth>,
     data: web::Data<DataSource>,
@@ -47,5 +49,17 @@ pub async fn sign_in(
 
     Ok(HttpResponse::Ok()
         .cookie(cookie)
-        .json(AuthPayload { token }))
+        .json(AuthPayload { token: Some(token) }))
+}
+
+pub async fn sign_out(_: JwtMiddleware) -> Result<HttpResponse, AppError> {
+    let cookie = Cookie::build("token", "")
+        .path("/")
+        .max_age(Duration::new(-1, 0))
+        .http_only(true)
+        .finish();
+
+    Ok(HttpResponse::Ok()
+        .cookie(cookie)
+        .json(AuthPayload { token: None }))
 }

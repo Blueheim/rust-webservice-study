@@ -13,7 +13,7 @@ pub struct ErrorPayload<T> {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AuthPayload {
-    pub token: String,
+    pub token: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

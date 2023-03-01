@@ -5,6 +5,7 @@ use std::io;
 
 mod server;
 
+mod account;
 mod auth;
 mod base;
 mod cat;
