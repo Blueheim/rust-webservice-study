@@ -1,4 +1,5 @@
 use actix_web::{web, HttpResponse};
+use common::{InfoPayload, SuccessPayload};
 use domains::{
     cat::{
         controller_db, controller_mock,
@@ -7,7 +8,6 @@ use domains::{
     data_source::DataSource,
 };
 use errors::AppError;
-use setup::{InfoPayload, SuccessPayload};
 
 /// Fetch all cats
 pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {

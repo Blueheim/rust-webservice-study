@@ -2,6 +2,7 @@ use actix_web::{
     cookie::{time::Duration, Cookie},
     web, HttpResponse,
 };
+use common::{AuthPayload, SuccessPayload};
 use domains::{
     auth::{
         controller_mock,
@@ -11,7 +12,6 @@ use domains::{
 };
 use errors::AppError;
 use serde_json::json;
-use setup::{AuthPayload, SuccessPayload};
 
 use crate::middlewares::auth::JwtMiddleware;
 

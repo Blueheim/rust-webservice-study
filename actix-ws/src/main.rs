@@ -23,7 +23,9 @@ async fn main() -> io::Result<()> {
     // Load .env file
     dotenv::from_path("actix-ws/.env").ok();
 
-    println!("{}", env::current_dir().unwrap().display());
+    if env::var("RUST_LOG").is_err() {
+        env::set_var("RUST_LOG", "actix_web=info");
+    }
 
     // Init logger
     env_logger::init();

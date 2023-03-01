@@ -1,10 +1,13 @@
 use actix_web::{error, http::StatusCode, HttpResponse};
+use common::ErrorPayload;
 use derive_more::{Display, Error};
 
 pub mod messages {
     pub const PASSWORD_CONFIRMATION_MISMATCH: &str = "Password and confirmation don't match";
-    pub const ACCOUNT_EXISTING: &str = "Account already existing for that email";
+    pub const ACCOUNT_ALREADY_EXISTING: &str = "Account already existing for that email";
     pub const EMAIL_PASSWORD_INVALID: &str = "Invalid email or password";
+    pub const AUTH_TOKEN_NOT_FOUND: &str =
+        "Auth token not found. Please sign in before accessing this resource";
 }
 
 #[derive(Debug, Display)]
@@ -27,7 +30,9 @@ impl AppError {
 
 impl error::ResponseError for AppError {
     fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.status_code()).json(self.to_string())
+        HttpResponse::build(self.status_code()).json(ErrorPayload {
+            error: self.to_string(),
+        })
     }
 
     fn status_code(&self) -> StatusCode {

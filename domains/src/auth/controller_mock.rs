@@ -27,7 +27,7 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
 
     if account_exist.is_some() {
         return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: messages::ACCOUNT_EXISTING.into(),
+            reason: messages::ACCOUNT_ALREADY_EXISTING.into(),
         })));
     }
 

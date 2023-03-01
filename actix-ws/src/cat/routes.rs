@@ -5,7 +5,7 @@ use super::handlers;
 pub const SCOPE: &str = "/cats";
 
 // routes
-pub fn routes(cfg: &mut ServiceConfig) {
+pub fn routes_config(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope(SCOPE)
             .route("/", web::get().to(handlers::fetch_all_cats))
@@ -23,11 +23,11 @@ mod tests {
 
     use actix_web::{http::header::ContentType, test, web, App};
     use chrono::{NaiveDate, Utc};
+    use common::{InfoPayload, SuccessPayload};
     use domains::{
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
         data_source::DataSource,
     };
-    use setup::{InfoPayload, SuccessPayload};
 
     fn test_data_mock() -> web::Data<DataSource> {
         web::Data::new(DataSource::mock(Some(vec![
@@ -52,7 +52,8 @@ mod tests {
     async fn test_get_all_cats() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::get()
             .uri(format!("{}/", SCOPE).as_str())
             .to_request();
@@ -68,7 +69,8 @@ mod tests {
     async fn test_get_one_cat() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::get()
             .uri(format!("{}/1/", SCOPE).as_str())
             .to_request();
@@ -84,7 +86,8 @@ mod tests {
     async fn test_post_cat() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::post()
             .uri(format!("{}/", SCOPE).as_str())
             .set_json(NewCat {
@@ -105,7 +108,8 @@ mod tests {
     async fn test_patch_cat() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::patch()
             .uri(format!("{}/1/", SCOPE).as_str())
             .set_json(UpdateCat {
@@ -127,7 +131,8 @@ mod tests {
     async fn test_put_cat() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::put()
             .uri(format!("{}/1/", SCOPE).as_str())
             .set_json(ReplaceCat {
@@ -150,7 +155,8 @@ mod tests {
     async fn test_delete_cat() {
         // Arrange
         let data = test_data_mock();
-        let app = test::init_service(App::new().app_data(data.clone()).configure(routes)).await;
+        let app =
+            test::init_service(App::new().app_data(data.clone()).configure(routes_config)).await;
         let req = test::TestRequest::delete()
             .uri(format!("{}/2/", SCOPE).as_str())
             .to_request();

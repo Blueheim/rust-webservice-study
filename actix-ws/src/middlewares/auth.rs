@@ -3,9 +3,11 @@ use std::future::{ready, Ready};
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpRequest};
 
+use errors::messages::AUTH_TOKEN_NOT_FOUND;
 use errors::{AppError, ClientError, Errors};
 use setup;
 
+#[derive(Debug)]
 pub struct JwtMiddleware {
     pub account_id: uuid::Uuid,
 }
@@ -27,7 +29,7 @@ impl FromRequest for JwtMiddleware {
         if token.is_none() {
             return ready(Err(AppError::new(Errors::Client(
                 ClientError::Unauthorized {
-                    reason: "Sign-in token required.".into(),
+                    reason: AUTH_TOKEN_NOT_FOUND.into(),
                 },
             ))));
         }

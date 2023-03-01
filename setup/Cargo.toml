@@ -5,7 +5,7 @@ authors = ["XD <blueheim>"]
 edition = "2021"
 
 [dependencies]
-config ={ verion="0.13.3", features = ["toml"]}
+config = { workspace= true }
 serde = { workspace= true }
 sqlx = { workspace= true }
 errors = { workspace= true }

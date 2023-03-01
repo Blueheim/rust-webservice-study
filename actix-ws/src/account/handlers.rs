@@ -1,17 +1,15 @@
 use actix_web::{web, HttpMessage, HttpRequest, HttpResponse};
+use common::SuccessPayload;
 use domains::{account::controller_mock, data_source::DataSource};
 use errors::AppError;
-use setup::SuccessPayload;
 
 use crate::middlewares::auth::JwtMiddleware;
 
 pub async fn fetch_auth_account(
-    req: HttpRequest,
     data: web::Data<DataSource>,
-    _: JwtMiddleware,
+    jwt: JwtMiddleware,
 ) -> Result<HttpResponse, AppError> {
-    let ext = req.extensions();
-    let account_id = ext.get::<uuid::Uuid>().unwrap();
+    let account_id = jwt.account_id;
 
     let account = data
         .exec_controller(

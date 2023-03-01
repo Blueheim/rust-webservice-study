@@ -9,6 +9,7 @@ edition = "2021"
 setup = { workspace = true }
 domains = { workspace = true }
 errors = { workspace = true }
+common = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 derive_more = { workspace = true }
@@ -16,6 +17,7 @@ dotenv = { workspace = true }
 async-trait = { workspace = true }
 chrono = { workspace = true }
 actix-web = { workspace = true }
+actix-cors = { workspace = true }
 log = { workspace = true }
 env_logger = { workspace = true }
 jsonwebtoken = { workspace = true }
