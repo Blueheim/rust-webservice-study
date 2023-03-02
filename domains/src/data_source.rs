@@ -5,7 +5,7 @@ use std::{
 };
 
 use errors::AppError;
-use setup::DBStore;
+use setup::DbStore;
 
 use crate::{account::models::Account, cat::models::Cat};
 
@@ -79,13 +79,13 @@ impl MockSource {
 
 #[derive(Debug)]
 pub struct DbSource {
-    pub db: DBStore,
+    pub db: DbStore,
 }
 
 impl DbSource {
     pub async fn new() -> Self {
         DbSource {
-            db: setup::create_postgres_store().await,
+            db: DbStore::create_postgres_store().await,
         }
     }
 }

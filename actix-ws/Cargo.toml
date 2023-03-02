@@ -22,3 +22,4 @@ log = { workspace = true }
 env_logger = { workspace = true }
 jsonwebtoken = { workspace = true }
 uuid = { workspace = true }
+validator = { workspace = true }

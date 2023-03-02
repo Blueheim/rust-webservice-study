@@ -7,6 +7,7 @@ use actix_web::{
     web, App, HttpServer,
 };
 use domains::data_source::DataSource;
+use errors::{AppError, ClientError, Errors};
 
 use crate::{account, auth, base, cat};
 
@@ -38,9 +39,12 @@ pub async fn start(data_source: DataSource) -> io::Result<()> {
             .wrap(cors)
             .wrap(path_normalizer)
             .wrap(logger)
-            // .app_data(web::JsonConfig::default().error_handler(|err, _req| {
-            //     error::InternalError::from_response(err, HttpResponse::Conflict().into()).into()
-            // }))
+            .app_data(web::JsonConfig::default().error_handler(|err, _req| {
+                AppError::new(Errors::Client(ClientError::BadRequest {
+                    reason: err.to_string(),
+                }))
+                .into()
+            }))
             .service(
                 web::scope("/api")
                     .configure(base::routes::routes_config)

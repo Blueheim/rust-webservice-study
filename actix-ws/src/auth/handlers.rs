@@ -12,6 +12,7 @@ use domains::{
 };
 use errors::AppError;
 use serde_json::json;
+use validator::Validate;
 
 use crate::middlewares::auth::JwtMiddleware;
 
@@ -35,6 +36,8 @@ pub async fn sign_in(
     auth: web::Json<SignInAuth>,
     data: web::Data<DataSource>,
 ) -> Result<HttpResponse, AppError> {
+    auth.validate()?;
+
     let token = data
         .exec_controller(
             |data_source| Box::pin(controller_mock::sign_in(auth.clone(), data_source)),

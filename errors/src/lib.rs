@@ -55,6 +55,16 @@ impl From<uuid::Error> for AppError {
     }
 }
 
+impl From<validator::ValidationErrors> for AppError {
+    fn from(err: validator::ValidationErrors) -> Self {
+        AppError {
+            error: Errors::Client(ClientError::BadRequest {
+                reason: err.to_string(),
+            }),
+        }
+    }
+}
+
 impl From<sqlx::Error> for AppError {
     fn from(_err: sqlx::Error) -> Self {
         AppError {

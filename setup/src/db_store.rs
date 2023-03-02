@@ -1,11 +1,19 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
+use crate::setup_config;
+
 #[derive(Debug, Clone)]
-pub struct DBStore {
+pub struct DbStore {
     pub connection: PgPool,
 }
 
-impl DBStore {
+impl DbStore {
+    pub async fn create_postgres_store() -> DbStore {
+        let db_url = setup_config::CONFIG.format_pg_db_url();
+        let db_store = DbStore::new_postgres(&db_url).await.unwrap();
+
+        db_store
+    }
     pub async fn new_postgres(db_url: &str) -> Result<Self, sqlx::Error> {
         let db_pool = match PgPoolOptions::new()
             .max_connections(4)
@@ -16,7 +24,7 @@ impl DBStore {
             Err(e) => panic!("Couldn't establish DB connection: {}", e),
         };
 
-        Ok(DBStore {
+        Ok(DbStore {
             connection: db_pool,
         })
     }
