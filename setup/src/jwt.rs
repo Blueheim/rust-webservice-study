@@ -24,7 +24,7 @@ pub struct Claims {
 pub fn decode_claims(token: &str) -> Result<Claims, AppError> {
     match decode::<Claims>(
         token,
-        &DecodingKey::from_secret(setup_config::config.jwt_secret.as_ref()),
+        &DecodingKey::from_secret(setup_config::CONFIG.jwt_secret.as_ref()),
         &Validation::default(),
     ) {
         Ok(c) => Ok(c.claims),
@@ -54,17 +54,17 @@ pub fn encode_token(entity_id: String) -> Result<String, AppError> {
     let exp = (now + Duration::minutes(60)).timestamp() as usize;
     let claims: Claims = Claims {
         iat,
-        iss: env::var("WEB_SERVER").unwrap().to_string(),
+        iss: env::var("WEB_SERVER").map_or_else(|_| "wsstudy".to_string(), |v| v),
         sub: entity_id,
         exp,
-        aud: Some(format!("{}/api/", setup_config::config.format_server_url())),
+        aud: Some(format!("{}/api/", setup_config::CONFIG.format_server_url())),
         nbf: None,
     };
 
     let token = encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(setup_config::config.jwt_secret.as_ref()),
+        &EncodingKey::from_secret(setup_config::CONFIG.jwt_secret.as_ref()),
     )?;
 
     Ok(token)

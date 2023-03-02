@@ -1,5 +1,6 @@
 use config::Config;
 use serde::Deserialize;
+use std::env;
 
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
@@ -25,8 +26,9 @@ pub struct AppConfig {
 
 impl AppConfig {
     pub fn read_local_config() -> Self {
+        let file = concat!(env!("CARGO_MANIFEST_DIR"), "/config");
         let config = Config::builder()
-            .add_source(config::File::with_name("setup/config"))
+            .add_source(config::File::with_name(file))
             .build()
             .unwrap();
 

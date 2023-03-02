@@ -21,7 +21,8 @@ mod middlewares;
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     // Load .env file
-    dotenv::from_path("actix-ws/.env").ok();
+    let env_file = concat!(env!("CARGO_MANIFEST_DIR"), "/.env");
+    dotenv::from_path(env_file).ok();
 
     if env::var("RUST_LOG").is_err() {
         env::set_var("RUST_LOG", "actix_web=info");

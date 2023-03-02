@@ -15,7 +15,7 @@ pub async fn start(data_source: DataSource) -> io::Result<()> {
     // web::Data will wrap our data into an Arc
     let data = web::Data::new(data_source);
 
-    let addr = setup::setup_config::config.format_server_url();
+    let addr = setup::setup_config::CONFIG.format_server_url();
 
     println!("🚀 Server listening on: {}", &addr);
 
