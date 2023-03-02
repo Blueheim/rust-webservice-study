@@ -23,7 +23,7 @@ mod tests {
     use chrono::Utc;
     use common::{AuthPayload, SuccessPayload};
     use domains::{
-        account::models::{Account, AccountId},
+        account::models::{Account, AccountId, SecureAccount},
         auth::models::{SignInAuth, SignUpAuth},
         data_source::{DataSource, MockData, MockSource},
     };
@@ -61,7 +61,7 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Account> = test::call_and_read_body_json(&app, req).await;
+        let resp: SuccessPayload<SecureAccount> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
         assert_eq!(resp.data.email, "catlover@email.com".to_owned());

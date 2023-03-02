@@ -26,8 +26,9 @@ pub async fn sign_up(
         )
         .await?;
 
-    // TODO: Create a type without sensible data
-    Ok(HttpResponse::Ok().json(SuccessPayload { data: account }))
+    Ok(HttpResponse::Ok().json(SuccessPayload {
+        data: account.secure(),
+    }))
 }
 
 pub async fn sign_in(

@@ -35,4 +35,26 @@ impl Account {
         let file = include_str!("./mock/accounts.json");
         serde_json::from_str(file).expect("can't read accounts.json")
     }
+    pub fn secure(self) -> SecureAccount {
+        SecureAccount {
+            id: self.id,
+            email: self.email,
+            role: self.role,
+            verified: self.verified,
+            creation_time: self.creation_time,
+            last_modification_time: self.last_modification_time,
+        }
+    }
+}
+
+/// Model sent back to the client
+/// Sensitive data are removed
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SecureAccount {
+    pub id: AccountId,
+    pub email: String,
+    pub role: String,
+    pub verified: bool,
+    pub creation_time: DateTime<Utc>,
+    pub last_modification_time: Option<DateTime<Utc>>,
 }
