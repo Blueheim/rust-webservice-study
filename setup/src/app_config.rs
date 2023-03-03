@@ -32,9 +32,7 @@ impl AppConfig {
             .build()
             .unwrap();
 
-        let config = config.try_deserialize::<Self>().unwrap();
-
-        config
+        config.try_deserialize::<Self>().unwrap()
     }
 
     pub fn format_server_url(&self) -> String {

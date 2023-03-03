@@ -1,8 +1,5 @@
-use std::env;
-
 use chrono::Utc;
 use errors::{messages, AppError, ClientError, Errors};
-use setup::Claims;
 
 use crate::{
     account::models::{Account, AccountId},

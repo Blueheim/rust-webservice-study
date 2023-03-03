@@ -1,4 +1,4 @@
-use actix_web::{error, http::StatusCode, App, HttpResponse};
+use actix_web::{error, http::StatusCode, HttpResponse};
 use common::ErrorPayload;
 use derive_more::{Display, Error};
 

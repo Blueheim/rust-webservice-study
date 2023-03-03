@@ -20,6 +20,6 @@ pub async fn select_one(id: uuid::Uuid, source: &MockSource) -> Result<Account, 
                     },
                 )))
             },
-            |account| Ok(account),
+            Ok,
         )
 }

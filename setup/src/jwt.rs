@@ -42,7 +42,7 @@ pub fn hash_password(password: String) -> String {
         .to_string()
 }
 
-pub fn verify_password(password: &String, password_received: String) -> Result<(), AppError> {
+pub fn verify_password(password: &str, password_received: String) -> Result<(), AppError> {
     let parsed_hash = PasswordHash::new(password)?;
     Argon2::default().verify_password(password_received.as_bytes(), &parsed_hash)?;
     Ok(())

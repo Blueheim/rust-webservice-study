@@ -1,8 +1,4 @@
-use std::{
-    future::{Future, IntoFuture},
-    pin::Pin,
-    sync::RwLock,
-};
+use std::{future::Future, pin::Pin, sync::RwLock};
 
 use errors::AppError;
 use setup::DbStore;
