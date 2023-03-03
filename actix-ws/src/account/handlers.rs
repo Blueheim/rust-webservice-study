@@ -1,4 +1,4 @@
-use actix_web::{web, HttpMessage, HttpRequest, HttpResponse};
+use actix_web::{web, HttpResponse};
 use common::SuccessPayload;
 use domains::{account::controller_mock, data_source::DataSource};
 use errors::AppError;
@@ -19,7 +19,7 @@ pub async fn fetch_auth_account(
                     data_source,
                 ))
             },
-            |data_source| unimplemented!(),
+            |_data_source| unimplemented!(),
         )
         .await?;
 

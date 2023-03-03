@@ -21,8 +21,8 @@ pub fn routes_config(cfg: &mut ServiceConfig) {
 mod tests {
     use super::*;
 
-    use actix_web::{http::header::ContentType, test, web, App};
-    use chrono::{NaiveDate, Utc};
+    use actix_web::{test, web, App};
+    use chrono::{Utc};
     use common::{InfoPayload, SuccessPayload};
     use domains::{
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},

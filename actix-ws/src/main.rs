@@ -1,7 +1,7 @@
 #![warn(clippy::all)]
 
 use domains::data_source::DataSource;
-use dotenv;
+
 use std::env;
 use std::io;
 
@@ -34,7 +34,7 @@ async fn main() -> io::Result<()> {
     env_logger::init();
 
     // Data source definition
-    let data_source = if let Ok(_) = env::var("MOCK_DATA") {
+    let data_source = if env::var("MOCK_DATA").is_ok() {
         println!("📄 Data source set to mock");
         DataSource::mock(None)
     } else {

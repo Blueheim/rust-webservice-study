@@ -25,7 +25,7 @@ pub async fn sign_up(
     let account = data
         .exec_controller(
             |data_source| Box::pin(controller_mock::sign_up(auth.clone(), data_source)),
-            |data_source| unimplemented!(),
+            |_data_source| unimplemented!(),
         )
         .await?;
 
@@ -43,7 +43,7 @@ pub async fn sign_in(
     let token = data
         .exec_controller(
             |data_source| Box::pin(controller_mock::sign_in(auth.clone(), data_source)),
-            |data_source| unimplemented!(),
+            |_data_source| unimplemented!(),
         )
         .await?;
 

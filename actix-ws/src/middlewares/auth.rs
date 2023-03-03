@@ -40,7 +40,7 @@ impl FromRequest for JwtMiddleware {
                 ready(Ok(JwtMiddleware { account_id }))
             }
             Err(err) => {
-                return ready(Err(err));
+                ready(Err(err))
             }
         }
     }
