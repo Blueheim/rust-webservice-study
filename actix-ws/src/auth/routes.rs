@@ -35,7 +35,7 @@ mod tests {
             Account {
                 id: AccountId::from_str("b8213d90-bfa5-43bd-a2d2-df94641f4176").unwrap(),
                 email: "test@mail.com".into(),
-                password: "$argon2id$v=19$m=4096,t=3,p=1$FPDGIZQ5GJwyDFcgcSURPg$0nTJ5Nr+vPFiPugqbCiq4Z/9KfvlgREGr+jxayPuaOk".into(), // pass12345
+                password: "$argon2id$v=19$m=4096,t=3,p=1$1t71JZJtA4E2y1+U0d6fNw$sJhlb1FYypxQ/268xg8V5JBsX0uGXFhWdu+WPRj7jz0".into(), // Pass:12345
                 role: "member".into(),
                 verified: false,
                 creation_time: Utc::now(),
@@ -55,8 +55,8 @@ mod tests {
             .uri(format!("{}/signup/", SCOPE).as_str())
             .set_json(SignUpAuth {
                 email: "catlover@email.com".into(),
-                password: "verysecurepw".into(),
-                confirmation: "verysecurepw".into(),
+                password: "Yop?yop!123".into(),
+                confirmation: "Yop?yop!123".into(),
             })
             .to_request();
 
@@ -79,7 +79,7 @@ mod tests {
             .uri(format!("{}/signin/", SCOPE).as_str())
             .set_json(SignInAuth {
                 email: "test@mail.com".into(),
-                password: "pass12345".into(),
+                password: "Pass:12345".into(),
             })
             .to_request();
 

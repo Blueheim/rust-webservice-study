@@ -1,4 +1,4 @@
-use common::PASSWORD_REGEX;
+use common::validation::validate_password;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -6,7 +6,7 @@ use validator::Validate;
 pub struct SignUpAuth {
     #[validate(email)]
     pub email: String,
-    #[validate(regex = "PASSWORD_REGEX")]
+    #[validate(custom(function = "validate_password"))]
     pub password: String,
     #[validate(must_match = "password")]
     pub confirmation: String,
@@ -16,6 +16,6 @@ pub struct SignUpAuth {
 pub struct SignInAuth {
     #[validate(email)]
     pub email: String,
-    #[validate(regex = "PASSWORD_REGEX")]
+    #[validate(custom(function = "validate_password"))]
     pub password: String,
 }

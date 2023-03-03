@@ -3,7 +3,7 @@ use std::future::{ready, Ready};
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpRequest};
 
-use errors::messages::AUTH_TOKEN_NOT_FOUND;
+use errors::api_error_messages::AUTH_TOKEN_NOT_FOUND;
 use errors::{AppError, ClientError, Errors};
 use setup;
 
@@ -39,9 +39,7 @@ impl FromRequest for JwtMiddleware {
                 let account_id = uuid::Uuid::parse_str(claims.sub.as_str()).unwrap();
                 ready(Ok(JwtMiddleware { account_id }))
             }
-            Err(err) => {
-                ready(Err(err))
-            }
+            Err(err) => ready(Err(err)),
         }
     }
 }

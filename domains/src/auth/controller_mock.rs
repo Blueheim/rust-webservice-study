@@ -1,5 +1,5 @@
 use chrono::Utc;
-use errors::{messages, AppError, ClientError, Errors};
+use errors::{api_error_messages, AppError, ClientError, Errors};
 
 use crate::{
     account::models::{Account, AccountId},
@@ -12,7 +12,7 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
     // TODO: remove and use validator crate
     if sign_up_auth.password != sign_up_auth.confirmation {
         return Err(AppError::new(Errors::Client(ClientError::BadRequest {
-            reason: messages::EMAIL_PASSWORD_INVALID.into(),
+            reason: api_error_messages::EMAIL_PASSWORD_INVALID.into(),
         })));
     }
 
@@ -25,7 +25,7 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
 
     if account_exist.is_some() {
         return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: messages::ACCOUNT_ALREADY_EXISTING.into(),
+            reason: api_error_messages::ACCOUNT_ALREADY_EXISTING.into(),
         })));
     }
 
@@ -56,7 +56,7 @@ pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<St
 
     if existing_account.is_none() {
         return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: messages::EMAIL_PASSWORD_INVALID.into(),
+            reason: api_error_messages::EMAIL_PASSWORD_INVALID.into(),
         })));
     }
 
