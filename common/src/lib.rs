@@ -1,5 +1,8 @@
+#[macro_use]
+extern crate lazy_static;
+
+use regex::Regex;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SuccessPayload<T> {
@@ -19,4 +22,8 @@ pub struct AuthPayload {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InfoPayload {
     pub message: String,
+}
+
+lazy_static! {
+    pub static ref PASSWORD_REGEX: Regex = Regex::new(r"[a-z]{2}$").unwrap();
 }

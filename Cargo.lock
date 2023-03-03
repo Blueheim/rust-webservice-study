@@ -447,8 +447,11 @@ dependencies = [
 name = "common"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
+ "regex",
  "serde",
  "serde_json",
+ "validator",
 ]
 
 [[package]]
@@ -649,6 +652,7 @@ name = "domains"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "common",
  "errors",
  "serde",
  "serde_json",

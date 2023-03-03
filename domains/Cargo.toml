@@ -8,6 +8,7 @@ edition = "2021"
 setup = { workspace = true }
 errors = { workspace = true }
 serde = { workspace = true }
+common = { workspace = true }
 serde_json = { workspace = true }
 chrono = { workspace = true }
 sqlx = { workspace = true }

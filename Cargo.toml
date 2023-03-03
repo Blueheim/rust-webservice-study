@@ -28,6 +28,7 @@ rand = "0.8.5"
 lazy_static = "1.4.0"
 config ={ verion="0.13.3", features = ["toml"]}
 validator = { version = "0.16", features = ["derive"] }
+regex = "1.7.1"
 
 # Crypto/Hashing
 argon2 = "0.4.1"

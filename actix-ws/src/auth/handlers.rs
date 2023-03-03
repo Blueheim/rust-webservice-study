@@ -8,10 +8,10 @@ use domains::{
         controller_mock,
         models::{SignInAuth, SignUpAuth},
     },
-    data_source::{DataSource, SourceType},
+    data_source::DataSource,
 };
 use errors::AppError;
-use serde_json::json;
+
 use validator::Validate;
 
 use crate::middlewares::auth::JwtMiddleware;
@@ -20,6 +20,8 @@ pub async fn sign_up(
     auth: web::Json<SignUpAuth>,
     data: web::Data<DataSource>,
 ) -> Result<HttpResponse, AppError> {
+    auth.validate()?;
+
     let account = data
         .exec_controller(
             |data_source| Box::pin(controller_mock::sign_up(auth.clone(), data_source)),

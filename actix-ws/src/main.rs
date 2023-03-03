@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 use domains::data_source::DataSource;
 use dotenv;
 use std::env;

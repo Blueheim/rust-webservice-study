@@ -12,6 +12,7 @@ use crate::{
 use super::models::{SignInAuth, SignUpAuth};
 
 pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account, AppError> {
+    // TODO: remove and use validator crate
     if sign_up_auth.password != sign_up_auth.confirmation {
         return Err(AppError::new(Errors::Client(ClientError::BadRequest {
             reason: messages::EMAIL_PASSWORD_INVALID.into(),
