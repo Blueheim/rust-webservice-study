@@ -10,7 +10,7 @@ pub struct SuccessPayload<T> {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ErrorPayload<T> {
-    pub error: T,
+    pub errors: Vec<T>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

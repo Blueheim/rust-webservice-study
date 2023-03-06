@@ -730,6 +730,7 @@ dependencies = [
  "common",
  "derive_more",
  "jsonwebtoken",
+ "serde",
  "sqlx",
  "uuid",
  "validator",

@@ -13,3 +13,4 @@ jsonwebtoken = { workspace = true }
 common = { workspace = true }
 uuid = { workspace = true }
 validator = { workspace = true }
+serde = { workspace = true }

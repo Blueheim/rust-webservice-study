@@ -6,9 +6,9 @@ use validator::Validate;
 pub struct SignUpAuth {
     #[validate(email)]
     pub email: String,
-    #[validate(custom(function = "validate_password"))]
+    #[validate(length(min = 8), custom(function = "validate_password"))]
     pub password: String,
-    #[validate(must_match = "password")]
+    #[validate(must_match(other = "password", message = "password"))]
     pub confirmation: String,
 }
 

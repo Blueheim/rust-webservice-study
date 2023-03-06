@@ -1,11 +1,5 @@
 use validator::ValidationError;
 
-pub mod validation_error_messages {
-    pub const PASSWORD_BAD_FORMAT: &str = "Password must have 8 characters minimum, contains at least one uppercase letter, at least one lowercase letter, at least one number and at least one punctuation character";
-    pub const PASSWORD_CONFIRMATION_MISMATCH: &str =
-        "Password and confirmation password don't match";
-}
-
 /// Check password format helper
 /// Minimum eight characters, at least one upper case letter, one lower case letter, one number and one punctuation ascii character
 fn check_password_complexity(password: &str) -> bool {
@@ -41,11 +35,7 @@ fn check_password_complexity(password: &str) -> bool {
 pub fn validate_password(password: &str) -> Result<(), ValidationError> {
     match check_password_complexity(password) {
         true => Ok(()),
-        false => {
-            return Err(ValidationError::new(
-                validation_error_messages::PASSWORD_BAD_FORMAT,
-            ))
-        }
+        false => return Err(ValidationError::new("password_complexity")),
     }
 }
 
