@@ -4,22 +4,9 @@ use actix_web::{error, http::StatusCode, HttpResponse};
 use common::ErrorPayload;
 use derive_more::{Display, Error};
 use serde::Serialize;
-use validation_error_messages::PASSWORD_BAD_FORMAT;
 use validator::{ValidationErrors, ValidationErrorsKind};
 
-pub mod api_error_messages {
-    pub const PASSWORD_CONFIRMATION_MISMATCH: &str = "Password and confirmation don't match";
-    pub const ACCOUNT_ALREADY_EXISTING: &str = "Account already existing for that email";
-    pub const EMAIL_PASSWORD_INVALID: &str = "Invalid email or password";
-    pub const AUTH_TOKEN_NOT_FOUND: &str =
-        "Auth token not found. Please sign in before accessing this resource";
-}
-
-pub mod validation_error_messages {
-    pub const PASSWORD_BAD_FORMAT: &str = "Password must have 8 characters minimum, contains at least one uppercase letter, at least one lowercase letter, at least one number and at least one punctuation character";
-    pub const PASSWORD_CONFIRMATION_MISMATCH: &str =
-        "Password and confirmation password don't match";
-}
+pub const PASSWORD_BAD_FORMAT: &str = "Password must have 8 characters minimum, contains at least one uppercase letter, at least one lowercase letter, at least one number and at least one punctuation character";
 
 #[derive(Debug, Display)]
 pub enum Errors {
@@ -40,7 +27,7 @@ impl AppError {
 }
 
 #[derive(Debug, Serialize, Display)]
-enum FieldErrors {
+pub enum FieldErrorMessages {
     #[display(fmt = "The field '{}' must have a minimum length of {}.", field, min)]
     MinLength { field: String, min: u64 },
     #[display(fmt = "The field '{}' must have a maximum length of {}.", field, max)]
@@ -74,7 +61,7 @@ enum FieldErrors {
 impl error::ResponseError for AppError {
     fn error_response(&self) -> HttpResponse {
         let payload = match &self.error {
-            Errors::Client(ClientError::InvalidBody { errors }) => {
+            Errors::Client(ClientError::InvalidFields { errors }) => {
                 let errors = errors.errors().iter();
                 let mut return_errors: Vec<String> = vec![];
                 for (field, err) in errors {
@@ -84,7 +71,7 @@ impl error::ResponseError for AppError {
                                 match field_error.code {
                                     Cow::Borrowed("must_match") => {
                                         return_errors.push(
-                                            FieldErrors::Equality {
+                                            FieldErrorMessages::Equality {
                                                 field1: field.to_string(),
                                                 field2: field_error
                                                     .message
@@ -101,21 +88,21 @@ impl error::ResponseError for AppError {
 
                                         let err = if let Some(min) = min {
                                             if let Some(max) = max {
-                                                FieldErrors::RangeLength {
+                                                FieldErrorMessages::RangeLength {
                                                     field: field.to_string(),
                                                     min: min.as_u64().unwrap(),
                                                     max: max.as_u64().unwrap(),
                                                 }
                                                 .to_string()
                                             } else {
-                                                FieldErrors::MinLength {
+                                                FieldErrorMessages::MinLength {
                                                     field: field.to_string(),
                                                     min: min.as_u64().unwrap(),
                                                 }
                                                 .to_string()
                                             }
                                         } else {
-                                            FieldErrors::MaxLength {
+                                            FieldErrorMessages::MaxLength {
                                                 field: field.to_string(),
                                                 max: max.unwrap().as_u64().unwrap(),
                                             }
@@ -126,7 +113,7 @@ impl error::ResponseError for AppError {
                                     }
                                     Cow::Borrowed("password_complexity") => {
                                         return_errors.push(
-                                            FieldErrors::Complexity {
+                                            FieldErrorMessages::Complexity {
                                                 field: field.to_string(),
                                                 complexity_message: PASSWORD_BAD_FORMAT.to_owned(),
                                             }
@@ -135,7 +122,7 @@ impl error::ResponseError for AppError {
                                     }
                                     Cow::Borrowed("email") => {
                                         return_errors.push(
-                                            FieldErrors::Email {
+                                            FieldErrorMessages::Email {
                                                 field: field.to_string(),
                                             }
                                             .to_string(),
@@ -150,22 +137,23 @@ impl error::ResponseError for AppError {
                         }
                     }
                 }
-                println!("{:?}", return_errors);
                 return_errors
             }
             _ => [self.to_string()].to_vec(),
         };
-        HttpResponse::build(self.status_code()).json(payload)
+        HttpResponse::build(self.status_code()).json(ErrorPayload { errors: payload })
     }
 
     fn status_code(&self) -> StatusCode {
         match self.error {
             Errors::Client(ClientError::ResourceNotFound { .. }) => StatusCode::NOT_FOUND,
-            Errors::Client(ClientError::BadRequest { .. }) => StatusCode::BAD_REQUEST,
+            Errors::Client(ClientError::InvalidCredentials) => StatusCode::BAD_REQUEST,
+            Errors::Client(ClientError::InvalidJson) => StatusCode::BAD_REQUEST,
             Errors::Client(ClientError::Unauthorized { .. }) => StatusCode::UNAUTHORIZED,
-            Errors::Client(ClientError::Conflict { .. }) => StatusCode::CONFLICT,
+            Errors::Client(ClientError::TokenNotFound) => StatusCode::UNAUTHORIZED,
+            Errors::Client(ClientError::AccountAlreadyExists) => StatusCode::CONFLICT,
             Errors::Client(ClientError::InvalidId) => StatusCode::UNPROCESSABLE_ENTITY,
-            Errors::Client(ClientError::InvalidBody { .. }) => StatusCode::BAD_REQUEST,
+            Errors::Client(ClientError::InvalidFields { .. }) => StatusCode::BAD_REQUEST,
             Errors::Server(ServerError::Internal) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -182,7 +170,7 @@ impl From<uuid::Error> for AppError {
 impl From<validator::ValidationErrors> for AppError {
     fn from(err: validator::ValidationErrors) -> Self {
         AppError {
-            error: Errors::Client(ClientError::InvalidBody { errors: err }),
+            error: Errors::Client(ClientError::InvalidFields { errors: err }),
         }
     }
 }
@@ -206,9 +194,7 @@ impl From<argon2::password_hash::Error> for AppError {
     fn from(err: argon2::password_hash::Error) -> Self {
         match err {
             argon2::password_hash::Error::Password => AppError {
-                error: Errors::Client(ClientError::BadRequest {
-                    reason: api_error_messages::EMAIL_PASSWORD_INVALID.into(),
-                }),
+                error: Errors::Client(ClientError::InvalidCredentials),
             },
             _ => AppError {
                 error: Errors::Server(ServerError::Internal),
@@ -224,21 +210,21 @@ pub enum ClientError {
         resource_name: String,
         id: String,
     },
-    #[display(fmt = "{}", reason)]
-    BadRequest {
-        reason: String,
-    },
+    #[display(fmt = "Invalid email or password")]
+    InvalidCredentials,
+    #[display(fmt = "Account already existing for that email")]
+    AccountAlreadyExists,
+    #[display(fmt = "Can't parse json body.")]
+    InvalidJson,
     #[display(fmt = "Access denied. {}", reason)]
     Unauthorized {
         reason: String,
     },
-    #[display(fmt = "{}", reason)]
-    Conflict {
-        reason: String,
-    },
+    #[display(fmt = "Auth token not found. Please sign in before accessing this resource")]
+    TokenNotFound,
     #[display(fmt = "Invalid Id provided.")]
     InvalidId,
-    InvalidBody {
+    InvalidFields {
         errors: ValidationErrors,
     },
 }

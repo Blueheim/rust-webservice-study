@@ -3,7 +3,6 @@ use std::future::{ready, Ready};
 use actix_web::dev::Payload;
 use actix_web::{http, FromRequest, HttpRequest};
 
-use errors::api_error_messages::AUTH_TOKEN_NOT_FOUND;
 use errors::{AppError, ClientError, Errors};
 use setup;
 
@@ -28,9 +27,7 @@ impl FromRequest for JwtMiddleware {
 
         if token.is_none() {
             return ready(Err(AppError::new(Errors::Client(
-                ClientError::Unauthorized {
-                    reason: AUTH_TOKEN_NOT_FOUND.into(),
-                },
+                ClientError::TokenNotFound,
             ))));
         }
 

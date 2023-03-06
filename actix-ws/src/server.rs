@@ -39,11 +39,8 @@ pub async fn start(data_source: DataSource) -> io::Result<()> {
             .wrap(cors)
             .wrap(path_normalizer)
             .wrap(logger)
-            .app_data(web::JsonConfig::default().error_handler(|err, _req| {
-                AppError::new(Errors::Client(ClientError::BadRequest {
-                    reason: err.to_string(),
-                }))
-                .into()
+            .app_data(web::JsonConfig::default().error_handler(|_err, _req| {
+                AppError::new(Errors::Client(ClientError::InvalidJson)).into()
             }))
             .service(
                 web::scope("/api")

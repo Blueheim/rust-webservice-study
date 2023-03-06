@@ -1,5 +1,5 @@
 use chrono::Utc;
-use errors::{api_error_messages, AppError, ClientError, Errors};
+use errors::{AppError, ClientError, Errors};
 
 use crate::{
     account::models::{Account, AccountId},
@@ -9,13 +9,6 @@ use crate::{
 use super::models::{SignInAuth, SignUpAuth};
 
 pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account, AppError> {
-    // TODO: remove and use validator crate
-    if sign_up_auth.password != sign_up_auth.confirmation {
-        return Err(AppError::new(Errors::Client(ClientError::BadRequest {
-            reason: api_error_messages::EMAIL_PASSWORD_INVALID.into(),
-        })));
-    }
-
     let mut accounts = source.accounts.write().unwrap();
 
     let account_exist = accounts
@@ -24,9 +17,9 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
         .position(|account| sign_up_auth.email == account.email);
 
     if account_exist.is_some() {
-        return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: api_error_messages::ACCOUNT_ALREADY_EXISTING.into(),
-        })));
+        return Err(AppError::new(Errors::Client(
+            ClientError::AccountAlreadyExists,
+        )));
     }
 
     let hashed_password = setup::hash_password(sign_up_auth.password);
@@ -55,9 +48,9 @@ pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<St
         .find(|account| sign_in_auth.email == account.email);
 
     if existing_account.is_none() {
-        return Err(AppError::new(Errors::Client(ClientError::Conflict {
-            reason: api_error_messages::EMAIL_PASSWORD_INVALID.into(),
-        })));
+        return Err(AppError::new(Errors::Client(
+            ClientError::AccountAlreadyExists,
+        )));
     }
 
     let account = existing_account.unwrap();
