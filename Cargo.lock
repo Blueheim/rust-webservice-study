@@ -666,6 +666,7 @@ dependencies = [
  "serde_json",
  "setup",
  "sqlx",
+ "tokio",
  "uuid",
  "validator",
 ]

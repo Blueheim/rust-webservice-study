@@ -4,6 +4,7 @@ use std::env;
 use domains::data_source::DataSource;
 
 mod base;
+mod cat;
 mod server;
 
 // IO-bound asynchronous runtime

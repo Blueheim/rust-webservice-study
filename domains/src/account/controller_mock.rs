@@ -5,7 +5,7 @@ use crate::data_source::MockSource;
 use super::models::Account;
 
 pub async fn select_one(id: uuid::Uuid, source: &MockSource) -> Result<Account, AppError> {
-    let accounts = source.accounts.read().unwrap();
+    let accounts = source.accounts.read().await;
 
     accounts
         .clone()

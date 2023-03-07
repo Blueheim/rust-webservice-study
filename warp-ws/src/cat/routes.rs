@@ -9,14 +9,16 @@ use super::handlers;
 pub fn routes_config(
     data: Arc<DataSource>,
 ) -> impl Filter<Extract = (impl Reply,), Error = Rejection> + Clone {
-    get_health(data.clone())
+    let root = warp::path("cats");
+    root.and(get_cats(data.clone()).or(warp::any().map(|| "Not found")))
+    //get_cats(data.clone())
 }
 
-pub fn get_health(
+pub fn get_cats(
     data: Arc<DataSource>,
 ) -> impl Filter<Extract = (impl Reply,), Error = Rejection> + Clone {
-    warp::path!("health")
+    warp::path!()
         .and(warp::get())
         .and(warp::any().map(move || data.clone()))
-        .and_then(handlers::check_health)
+        .and_then(handlers::fetch_all)
 }

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use domains::data_source::DataSource;
 use warp::{http::Method, Filter};
 
-use crate::base;
+use crate::{base, cat};
 
 /// Start HTTP server
 pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
@@ -19,16 +19,14 @@ pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
         .allow_header("content-type")
         .allow_methods(&[Method::PUT, Method::DELETE, Method::GET, Method::POST]);
 
-    let root = warp::path("api");
+    let root_scope = warp::path("api");
 
-    let base_api = base::routes::routes_config(data);
+    let base_api = base::routes::routes_config(data.clone());
+    let cat_api = cat::routes::routes_config(data.clone());
 
-    let api = base_api
-        .or(warp::any().map(|| "Not found"))
-        .with(cors)
-        .with(warp::log("info"));
+    let api = base_api.or(cat_api).with(cors).with(warp::log("info"));
 
-    let routes = root.and(api);
+    let routes = root_scope.and(api);
 
     warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
 

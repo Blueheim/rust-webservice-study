@@ -3,6 +3,8 @@ use std::{future::Future, pin::Pin, sync::RwLock};
 use errors::AppError;
 use setup::DbStore;
 
+use tokio::sync::RwLock as TokioRwLock;
+
 use crate::{account::models::Account, cat::models::Cat};
 
 #[derive(Debug)]
@@ -34,10 +36,10 @@ impl DataSource {
         &'a self,
         mock_fn: M,
         db_fn: N,
-    ) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>
+    ) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + Send + 'a)>>
     where
-        M: Fn(&'a MockSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>,
-        N: Fn(&'a DbSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + 'a)>>,
+        M: Fn(&'a MockSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + Send + 'a)>>,
+        N: Fn(&'a DbSource) -> Pin<Box<(dyn Future<Output = Result<T, AppError>> + Send + 'a)>>,
     {
         match &self.source {
             SourceType::Mock(data_source) => mock_fn(data_source),
@@ -53,21 +55,21 @@ pub enum MockData {
 
 #[derive(Debug, Default)]
 pub struct MockSource {
-    pub accounts: RwLock<Vec<Account>>,
-    pub cats: RwLock<Vec<Cat>>,
+    pub accounts: TokioRwLock<Vec<Account>>,
+    pub cats: TokioRwLock<Vec<Cat>>,
 }
 
 impl MockSource {
     pub fn new() -> Self {
         MockSource {
-            accounts: RwLock::new(Account::mock_data()),
-            cats: RwLock::new(Cat::mock_data()),
+            accounts: TokioRwLock::new(Account::mock_data()),
+            cats: TokioRwLock::new(Cat::mock_data()),
         }
     }
     pub fn set(mut self, data: MockData) -> Self {
         match data {
-            MockData::Cat(d) => self.cats = RwLock::new(d),
-            MockData::Account(d) => self.accounts = RwLock::new(d),
+            MockData::Cat(d) => self.cats = TokioRwLock::new(d),
+            MockData::Account(d) => self.accounts = TokioRwLock::new(d),
         }
         self
     }

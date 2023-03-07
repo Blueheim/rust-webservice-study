@@ -9,7 +9,7 @@ use crate::{
 use super::models::{SignInAuth, SignUpAuth};
 
 pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Account, AppError> {
-    let mut accounts = source.accounts.write().unwrap();
+    let mut accounts = source.accounts.write().await;
 
     let account_exist = accounts
         .clone()
@@ -40,7 +40,7 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
 }
 
 pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<String, AppError> {
-    let accounts = source.accounts.read().unwrap();
+    let accounts = source.accounts.read().await;
 
     let existing_account = accounts
         .clone()

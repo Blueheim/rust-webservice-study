@@ -7,11 +7,11 @@ use crate::{
 };
 
 pub async fn select_all(source: &MockSource) -> Result<Vec<Cat>, AppError> {
-    Ok(source.cats.read().unwrap().to_vec())
+    Ok(source.cats.read().await.to_vec())
 }
 
 pub async fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
-    let cats = source.cats.read().unwrap();
+    let cats = source.cats.read().await;
 
     cats.clone()
         .into_iter()
@@ -30,7 +30,7 @@ pub async fn select_one(id: i32, source: &MockSource) -> Result<Cat, AppError> {
 }
 
 pub async fn create_one(new_cat: NewCat, source: &MockSource) -> Result<Cat, AppError> {
-    let mut cats = source.cats.write().unwrap();
+    let mut cats = source.cats.write().await;
     let next_id = cats.len() + 1;
     let cat = Cat {
         id: CatId(next_id.to_string()),
@@ -48,7 +48,7 @@ pub async fn update_one(
     update_cat: UpdateCat,
     source: &MockSource,
 ) -> Result<Cat, AppError> {
-    let mut cats = source.cats.write().unwrap();
+    let mut cats = source.cats.write().await;
 
     cats.clone()
         .into_iter()
@@ -88,7 +88,7 @@ pub async fn replace_one(
     replace_cat: ReplaceCat,
     source: &MockSource,
 ) -> Result<Cat, AppError> {
-    let mut cats = source.cats.write().unwrap();
+    let mut cats = source.cats.write().await;
 
     cats.clone()
         .into_iter()
@@ -117,7 +117,7 @@ pub async fn replace_one(
 }
 
 pub async fn delete_one(id: i32, source: &MockSource) -> Result<String, AppError> {
-    let mut cats = source.cats.write().unwrap();
+    let mut cats = source.cats.write().await;
 
     cats.clone()
         .into_iter()
