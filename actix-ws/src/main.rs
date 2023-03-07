@@ -33,7 +33,7 @@ async fn main() -> io::Result<()> {
     // Init logger
     env_logger::init();
 
-    // Data source definition
+    // Data source selection
     let data_source = if env::var("MOCK_DATA").is_ok() {
         println!("📄 Data source set to mock");
         DataSource::mock(None)
@@ -42,6 +42,6 @@ async fn main() -> io::Result<()> {
         DataSource::db().await
     };
 
-    // Start server app
+    // Start server-app
     server::start(data_source).await
 }

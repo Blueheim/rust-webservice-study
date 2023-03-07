@@ -22,3 +22,5 @@ pub struct AuthPayload {
 pub struct InfoPayload {
     pub message: String,
 }
+
+pub const CAT_SCOPE: &str = "/cats";

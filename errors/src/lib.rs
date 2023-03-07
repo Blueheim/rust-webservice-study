@@ -1,20 +1,21 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, io};
 
 use actix_web::{error, http::StatusCode, HttpResponse};
 use common::ErrorPayload;
 use derive_more::{Display, Error};
 use serde::Serialize;
 use validator::{ValidationErrors, ValidationErrorsKind};
+use warp::reject::Reject;
 
 pub const PASSWORD_BAD_FORMAT: &str = "Password must have 8 characters minimum, contains at least one uppercase letter, at least one lowercase letter, at least one number and at least one punctuation character";
 
-#[derive(Debug, Display)]
+#[derive(Debug, Display, Clone)]
 pub enum Errors {
     Client(ClientError),
     Server(ServerError),
 }
 
-#[derive(Debug, Display)]
+#[derive(Debug, Display, Clone)]
 pub struct AppError {
     #[display(fmt = "{}", error)]
     error: Errors,
@@ -25,6 +26,8 @@ impl AppError {
         Self { error }
     }
 }
+
+impl Reject for AppError {} // warp marker trait
 
 #[derive(Debug, Serialize, Display)]
 pub enum FieldErrorMessages {
@@ -203,7 +206,15 @@ impl From<argon2::password_hash::Error> for AppError {
     }
 }
 
-#[derive(Debug, Display, Error)]
+impl From<io::Error> for AppError {
+    fn from(_err: io::Error) -> Self {
+        AppError {
+            error: Errors::Server(ServerError::Internal),
+        }
+    }
+}
+
+#[derive(Debug, Display, Error, Clone)]
 pub enum ClientError {
     #[display(fmt = "Resource: {}/{} not found.", resource_name, id)]
     ResourceNotFound {
@@ -229,7 +240,7 @@ pub enum ClientError {
     },
 }
 
-#[derive(Debug, Display, Error)]
+#[derive(Debug, Display, Error, Clone)]
 pub enum ServerError {
     #[display(fmt = "Internal error. Try again later.")]
     Internal,

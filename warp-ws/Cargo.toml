@@ -5,3 +5,13 @@ authors = ["XD <blueheim>"]
 edition = "2021"
 
 [dependencies]
+# Workspace
+setup = { workspace = true }
+domains = { workspace = true }
+errors = { workspace = true }
+common = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+warp = { workspace = true }
+tokio = { workspace = true }
+dotenv = { workspace = true }

@@ -8,6 +8,7 @@ edition = "2021"
 derive_more = { workspace = true }
 sqlx = { workspace = true }
 actix-web = { workspace = true }
+warp = { workspace = true }
 argon2 = { workspace = true }
 jsonwebtoken = { workspace = true }
 common = { workspace = true }
