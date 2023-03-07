@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use domains::data_source::DataSource;
+use errors::handle_rejection;
 use warp::{http::Method, Filter};
 
 use crate::{base, cat};
@@ -26,7 +27,7 @@ pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
 
     let api = base_api.or(cat_api).with(cors).with(warp::log("info"));
 
-    let routes = root_scope.and(api);
+    let routes = root_scope.and(api).recover(handle_rejection);
 
     warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
 
