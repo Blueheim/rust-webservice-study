@@ -47,6 +47,10 @@ pub enum ClientError {
     AccountAlreadyExists,
     #[display(fmt = "Can't parse json body.")]
     InvalidJson,
+    #[display(fmt = "Access forbidden. {}", reason)]
+    Forbidden {
+        reason: String,
+    },
     #[display(fmt = "Access denied. {}", reason)]
     Unauthorized {
         reason: String,
@@ -209,6 +213,7 @@ impl error::ResponseError for AppError {
             Errors::Client(ClientError::RouteUnknown) => StatusCode::NOT_FOUND,
             Errors::Client(ClientError::InvalidCredentials) => StatusCode::BAD_REQUEST,
             Errors::Client(ClientError::InvalidJson) => StatusCode::BAD_REQUEST,
+            Errors::Client(ClientError::Forbidden { .. }) => StatusCode::FORBIDDEN,
             Errors::Client(ClientError::Unauthorized { .. }) => StatusCode::UNAUTHORIZED,
             Errors::Client(ClientError::TokenNotFound) => StatusCode::UNAUTHORIZED,
             Errors::Client(ClientError::AccountAlreadyExists) => StatusCode::CONFLICT,
@@ -218,3 +223,5 @@ impl error::ResponseError for AppError {
         }
     }
 }
+
+// TODO: implement from actix-web error for uncaught errors

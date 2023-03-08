@@ -5,6 +5,7 @@ use domains::data_source::DataSource;
 
 mod base;
 mod cat;
+mod helpers;
 mod server;
 
 // IO-bound asynchronous runtime
