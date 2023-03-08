@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use validator::ValidationError;
 
 pub mod validation;
 
