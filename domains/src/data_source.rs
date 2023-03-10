@@ -1,7 +1,7 @@
 use std::{future::Future, pin::Pin};
 
 use errors::AppError;
-use setup::DbStore;
+use setup::db_store::DbStore;
 
 use tokio::sync::RwLock as TokioRwLock;
 

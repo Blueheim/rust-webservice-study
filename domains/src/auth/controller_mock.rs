@@ -22,7 +22,7 @@ pub async fn sign_up(sign_up_auth: SignUpAuth, source: &MockSource) -> Result<Ac
         )));
     }
 
-    let hashed_password = setup::hash_password(sign_up_auth.password);
+    let hashed_password = setup::helpers::hash_password(sign_up_auth.password);
 
     let account = Account {
         id: AccountId(uuid::Uuid::new_v4()),
@@ -55,7 +55,7 @@ pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<St
 
     let account = existing_account.unwrap();
 
-    setup::verify_password(&account.password, sign_in_auth.password)?;
+    setup::helpers::verify_password(&account.password, sign_in_auth.password)?;
 
     let token = setup::AUTH_CONFIG.encode_token(account.id.0.to_string())?;
 
