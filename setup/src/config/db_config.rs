@@ -80,6 +80,12 @@ impl DbConfig {
         }
     }
 
+    pub fn from_command_line() -> Self {
+        let config = Self::parse();
+
+        config
+    }
+
     pub fn format_postgres_url(&self) -> String {
         format!(
             "postgres://{}:{}@{}:{}/{}",

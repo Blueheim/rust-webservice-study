@@ -1,9 +1,5 @@
-use clap::Parser;
-use config::Config;
-use errors::{AppError, ConfigError, Errors};
-use lazy_static::__Deref;
-use serde::Deserialize;
-use std::{collections::HashMap, env, str::FromStr};
+use errors::AppError;
+use std::{env, str::FromStr};
 
 use super::{db_config::DbConfig, server_config::ServerConfig};
 
@@ -24,7 +20,7 @@ pub struct AppConfig {
 #[derive(Debug, PartialEq)]
 enum ConfigSource {
     File,
-    Command,
+    CommandLine,
     Both,
     EnvVar,
 }
@@ -35,7 +31,7 @@ impl FromStr for ConfigSource {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_lowercase().as_str() {
             "file" => Ok(Self::File),
-            "command" => Ok(Self::Command),
+            "command_line" => Ok(Self::CommandLine),
             "both" => Ok(Self::Both),
             "env_var" => Ok(Self::EnvVar),
             _invalid_source => panic!("Invalid config source"),
@@ -85,8 +81,6 @@ const DEFAULT_DATA_MODE: DataMode = DataMode::File;
 
 impl AppConfig {
     pub fn new() -> Result<Self, AppError> {
-        let app_config;
-
         let env_mode = match env::var("ENV_MODE") {
             Ok(mode) => EnvMode::from_str(mode.as_str())?,
             Err(_) => DEFAULT_ENV_MODE,
@@ -109,36 +103,50 @@ impl AppConfig {
             if data_mode == DataMode::Database {
                 db_config = DbConfig::from_env_var();
             }
-            app_config = Self {
+            return Ok(Self {
                 server: server_config,
                 database: db_config,
                 config_source: ConfigSource::EnvVar,
                 env_mode,
                 data_mode,
-            };
-        } else {
-            // Development Mode
-            if config_source == ConfigSource::File {
-                let server_config = ServerConfig::from_file();
-                let mut db_config = DbConfig::default();
+            });
+        }
+
+        // Development Mode
+        let server_config;
+        let mut db_config = DbConfig::default();
+        match config_source {
+            ConfigSource::File => {
+                server_config = ServerConfig::from_file();
                 if data_mode == DataMode::Database {
                     db_config = DbConfig::from_file();
                 }
-                app_config = Self {
-                    server: server_config,
-                    database: db_config,
-                    config_source,
-                    env_mode,
-                    data_mode,
-                };
-            } else if config_source == ConfigSource::Both {
-                unimplemented!()
-            } else {
+            }
+            ConfigSource::CommandLine => {
+                server_config = ServerConfig::from_command_line();
+                if data_mode == DataMode::Database {
+                    db_config = DbConfig::from_command_line();
+                }
+            }
+            ConfigSource::Both => {
                 unimplemented!()
             }
+            ConfigSource::EnvVar => {
+                server_config = ServerConfig::from_env_var();
+                if data_mode == DataMode::Database {
+                    db_config = DbConfig::from_env_var();
+                }
+            }
         }
+        let app_config = Self {
+            server: server_config,
+            database: db_config,
+            config_source,
+            env_mode,
+            data_mode,
+        };
 
         println!("{:?}", app_config);
-        return Ok(app_config);
+        Ok(app_config)
     }
 }

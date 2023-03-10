@@ -11,13 +11,13 @@ use crate::helpers;
 pub struct ServerConfig {
     /// Log level
     /// Decide which kind of errors we want to log (info, warn, error)
-    #[clap(short, long, default_value = "info")]
+    #[clap(long, default_value = "info")]
     pub log_level: String,
     /// Web server ip addr host
-    #[clap(short, long, default_value = "127.0.0.1")]
+    #[clap(long, default_value = "127.0.0.1")]
     pub host_ip: String,
     /// Web server port
-    #[clap(short, long, default_value = "3000")]
+    #[clap(long, default_value = "3000", value_parser = clap::value_parser!(u16).range(1..))]
     pub port: u16,
 }
 
@@ -46,6 +46,12 @@ impl ServerConfig {
                 .parse::<u16>()
                 .expect("server_port does not contain a valid number (u16)"),
         }
+    }
+
+    pub fn from_command_line() -> Self {
+        let config = Self::parse();
+
+        config
     }
 
     pub fn from_env_var() -> Self {
