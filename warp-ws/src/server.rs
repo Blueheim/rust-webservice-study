@@ -11,7 +11,7 @@ pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
     // Wrap our data into an Arc for multithread concurrency
     let data = Arc::new(data_source);
 
-    let addr = setup::setup_config::CONFIG.format_server_url();
+    let addr = setup::setup_config::APP_CONFIG.server.format_url();
 
     println!("🚀 Server listening on: {}", &addr);
 

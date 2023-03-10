@@ -1,5 +1,5 @@
 # Config file
-# For development purpose only
+# Used only in development mode
 
 log_level = "info"
 database_user = "blueheim"
@@ -7,6 +7,5 @@ database_password = "dev"
 database_host = "localhost"
 database_port = 5432
 database_name = "wsstudy"
-server_host = "127.0.0.1"
+server_host_ip = "127.0.0.1"
 server_port = 3000
-jwt_secret="jwt_secret_12345"

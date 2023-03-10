@@ -31,7 +31,7 @@ impl FromRequest for JwtMiddleware {
             ))));
         }
 
-        match setup::decode_claims(&token.unwrap()) {
+        match setup::AUTH_CONFIG.decode_claims(&token.unwrap()) {
             Ok(claims) => {
                 let account_id = uuid::Uuid::parse_str(claims.sub.as_str()).unwrap();
                 ready(Ok(JwtMiddleware { account_id }))

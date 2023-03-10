@@ -29,6 +29,7 @@ lazy_static = "1.4.0"
 config ={ version="0.13.3", features = ["toml"]}
 validator = { version = "0.16", features = ["derive"] }
 regex = "1.7.1"
+clap = { version="4.1.8", features = ["derive"] }
 
 # Crypto/Hashing
 argon2 = "0.4.1"

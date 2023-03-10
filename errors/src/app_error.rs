@@ -24,6 +24,7 @@ impl AppError {
 pub enum Errors {
     Client(ClientError),
     Server(ServerError),
+    Config(ConfigError),
 }
 
 #[derive(Debug, Display, Error, Clone)]
@@ -62,6 +63,16 @@ pub enum ClientError {
     InvalidFields {
         errors: ValidationErrors,
     },
+}
+
+#[derive(Debug, Display, Error, Clone)]
+pub enum ConfigError {
+    #[display(fmt = "{} is not a valid configuration source.", invalid_source)]
+    InvalidConfigSource { invalid_source: String },
+    #[display(fmt = "{} is not a valid app environment.", invalid_env_mode)]
+    InvalidEnvMode { invalid_env_mode: String },
+    #[display(fmt = "{} is not a valid data mode.", invalid_data_mode)]
+    InvalidDataMode { invalid_data_mode: String },
 }
 
 impl Reject for AppError {} // warp marker trait
@@ -219,7 +230,16 @@ impl error::ResponseError for AppError {
             Errors::Client(ClientError::AccountAlreadyExists) => StatusCode::CONFLICT,
             Errors::Client(ClientError::InvalidId) => StatusCode::UNPROCESSABLE_ENTITY,
             Errors::Client(ClientError::InvalidFields { .. }) => StatusCode::BAD_REQUEST,
+            //
             Errors::Server(ServerError::Internal) => StatusCode::INTERNAL_SERVER_ERROR,
+            //
+            Errors::Config(ConfigError::InvalidConfigSource { .. }) => {
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
+            Errors::Config(ConfigError::InvalidEnvMode { .. }) => StatusCode::INTERNAL_SERVER_ERROR,
+            Errors::Config(ConfigError::InvalidDataMode { .. }) => {
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
         }
     }
 }

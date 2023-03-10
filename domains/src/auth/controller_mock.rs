@@ -57,7 +57,7 @@ pub async fn sign_in(sign_in_auth: SignInAuth, source: &MockSource) -> Result<St
 
     setup::verify_password(&account.password, sign_in_auth.password)?;
 
-    let token = setup::encode_token(account.id.0.to_string())?;
+    let token = setup::AUTH_CONFIG.encode_token(account.id.0.to_string())?;
 
     Ok(token)
 }
