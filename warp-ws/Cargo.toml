@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["XD <blueheim>"]
 edition = "2021"
 
+[[bin]]
+name = "server"
+
 [dependencies]
 # Workspace
 setup = { workspace = true }

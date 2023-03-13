@@ -1,12 +1,9 @@
 use errors::AppError;
+use setup::APP_CONFIG;
 use std::env;
+use warp_ws::start;
 
 use domains::data_source::DataSource;
-
-mod base;
-mod cat;
-mod helpers;
-mod server;
 
 // IO-bound asynchronous runtime
 // Multithreaded by default
@@ -25,8 +22,10 @@ async fn main() -> Result<(), AppError> {
         DataSource::db().await
     };
 
+    let addr = &APP_CONFIG.server.format_url();
+
     // Start server-app
-    server::start(data_source).await?;
+    start(data_source, addr).await?;
 
     Ok(())
 }

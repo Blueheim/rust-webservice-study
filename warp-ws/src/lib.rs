@@ -2,17 +2,16 @@ use std::sync::Arc;
 
 use domains::data_source::DataSource;
 use errors::handle_rejection;
-use setup::APP_CONFIG;
 use warp::{http::Method, Filter};
 
-use crate::{base, cat};
+mod base;
+mod cat;
+mod helpers;
 
 /// Start HTTP server
-pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
+pub async fn start(data_source: DataSource, addr: &str) -> Result<(), std::io::Error> {
     // Wrap our data into an Arc for multithread concurrency
     let data = Arc::new(data_source);
-
-    let addr = &APP_CONFIG.server.format_url();
 
     println!("🚀 Server listening on: {}", &addr);
 
