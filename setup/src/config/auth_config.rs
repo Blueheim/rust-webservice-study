@@ -5,7 +5,7 @@ use errors::{AppError, ClientError, Errors};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
-use crate::setup_config;
+use crate::APP_CONFIG;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AuthConfig {
@@ -52,10 +52,7 @@ impl AuthConfig {
             iss: env::var("WEB_SERVER").map_or_else(|_| "wsstudy".to_string(), |v| v),
             sub: entity_id,
             exp,
-            aud: Some(format!(
-                "{}/api/",
-                setup_config::APP_CONFIG.server.format_url()
-            )),
+            aud: Some(format!("{}/api/", &APP_CONFIG.server.format_url())),
             nbf: None,
         };
 

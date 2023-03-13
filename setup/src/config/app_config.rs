@@ -10,15 +10,15 @@ pub struct AppConfig {
     /// Database configuration
     pub database: DbConfig,
     /// Server and database config source (file, command, both, env variables)
-    config_source: ConfigSource,
+    pub config_source: ConfigSource,
     /// env mode (development or production)
-    env_mode: EnvMode,
+    pub env_mode: EnvMode,
     /// data mode (file or database)
-    data_mode: DataMode,
+    pub data_mode: DataMode,
 }
 
 #[derive(Debug, PartialEq)]
-enum ConfigSource {
+pub enum ConfigSource {
     File,
     CommandLine,
     Both,
@@ -40,7 +40,7 @@ impl FromStr for ConfigSource {
 }
 
 #[derive(Debug, PartialEq)]
-enum EnvMode {
+pub enum EnvMode {
     Development,
     Production,
 }
@@ -58,7 +58,7 @@ impl FromStr for EnvMode {
 }
 
 #[derive(Debug, PartialEq)]
-enum DataMode {
+pub enum DataMode {
     File,
     Database,
 }

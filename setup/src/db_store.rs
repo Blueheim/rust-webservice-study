@@ -1,6 +1,6 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-use crate::setup_config;
+use crate::APP_CONFIG;
 
 #[derive(Debug, Clone)]
 pub struct DbStore {
@@ -9,7 +9,7 @@ pub struct DbStore {
 
 impl DbStore {
     pub async fn create_postgres_store() -> DbStore {
-        let db_url = setup_config::APP_CONFIG.database.format_postgres_url();
+        let db_url = APP_CONFIG.database.format_postgres_url();
         let db_store = DbStore::new_postgres(&db_url).await.unwrap();
 
         db_store

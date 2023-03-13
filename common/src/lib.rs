@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+pub mod crypto;
 pub mod validation;
 
 #[derive(Debug, Serialize, Deserialize)]

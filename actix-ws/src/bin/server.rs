@@ -1,17 +1,13 @@
 #![warn(clippy::all)]
 
+use actix_ws::start;
+use setup::config::app_config::DataMode;
+use setup::APP_CONFIG;
+
 use domains::data_source::DataSource;
 
 use std::env;
 use std::io;
-
-mod server;
-
-mod account;
-mod auth;
-mod base;
-mod cat;
-mod middlewares;
 
 /// Actix HTTP server
 /// uses multi-threading concurrency by starting multiple worker threads on startup
@@ -26,22 +22,26 @@ async fn main() -> io::Result<()> {
     let env_file = concat!(env!("CARGO_MANIFEST_DIR"), "/.env");
     dotenv::from_path(env_file).ok();
 
-    if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "actix_web=info");
-    }
+    let log_level = &APP_CONFIG.server.log_level;
+    env::set_var("RUST_LOG", format!("actix_web={}", log_level));
 
     // Init logger
     env_logger::init();
 
     // Data source selection
-    let data_source = if env::var("MOCK_DATA").is_ok() {
-        println!("📄 Data source set to mock");
-        DataSource::mock(None)
-    } else {
-        println!("🛢️ Data source set to db");
-        DataSource::db().await
+    let data_source = match &APP_CONFIG.data_mode {
+        DataMode::File => {
+            println!("📄 Data source set to: File");
+            DataSource::mock(None)
+        }
+        DataMode::Database => {
+            println!("🛢️ Data source set to: Db");
+            DataSource::db().await
+        }
     };
 
+    let addr = &APP_CONFIG.server.format_url();
+
     // Start server-app
-    server::start(data_source).await
+    start(data_source, addr).await
 }

@@ -9,16 +9,18 @@ use actix_web::{
 use domains::data_source::DataSource;
 use errors::{AppError, ClientError, Errors};
 
-use crate::{account, auth, base, cat};
+mod account;
+mod auth;
+mod base;
+mod cat;
+mod middlewares;
 
 /// Start HTTP server
-pub async fn start(data_source: DataSource) -> io::Result<()> {
+pub async fn start(data_source: DataSource, addr: &str) -> io::Result<()> {
     // web::Data will wrap our data into an Arc
     let data = web::Data::new(data_source);
 
-    let addr = setup::setup_config::APP_CONFIG.server.format_url();
-
-    println!("🚀 Server listening on: {}", &addr);
+    println!("🚀 Server listening on: {}", addr);
 
     // HttpServer constructs an application instance for each thread
     HttpServer::new(move || {

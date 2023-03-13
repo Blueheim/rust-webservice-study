@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use domains::data_source::DataSource;
 use errors::handle_rejection;
+use setup::APP_CONFIG;
 use warp::{http::Method, Filter};
 
 use crate::{base, cat};
@@ -11,7 +12,7 @@ pub async fn start(data_source: DataSource) -> Result<(), std::io::Error> {
     // Wrap our data into an Arc for multithread concurrency
     let data = Arc::new(data_source);
 
-    let addr = setup::setup_config::APP_CONFIG.server.format_url();
+    let addr = &APP_CONFIG.server.format_url();
 
     println!("🚀 Server listening on: {}", &addr);
 
