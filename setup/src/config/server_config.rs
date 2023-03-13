@@ -5,19 +5,23 @@ use serde::Deserialize;
 
 use crate::helpers;
 
-#[derive(Debug, Parser, Deserialize, Default)]
+pub const DEFAULT_LOG_LEVEL: &str = "info";
+pub const DEFAULT_HOST_IP: &str = "127.0.0.1";
+pub const DEFAULT_PORT: &str = "3000";
+
+#[derive(Debug, Parser, Deserialize, Default, PartialEq)]
 #[clap(author, version, about, long_about = None)]
 /// Web server structure study
 pub struct ServerConfig {
     /// Log level
     /// Decide which kind of errors we want to log (info, warn, error)
-    #[clap(long, default_value = "info")]
+    #[clap(long, default_value = DEFAULT_LOG_LEVEL)]
     pub log_level: String,
     /// Web server ip addr host
-    #[clap(long, default_value = "127.0.0.1")]
+    #[clap(long, default_value = DEFAULT_HOST_IP)]
     pub host_ip: String,
     /// Web server port
-    #[clap(long, default_value = "3000", value_parser = clap::value_parser!(u16).range(1..))]
+    #[clap(long, default_value = DEFAULT_PORT, value_parser = clap::value_parser!(u16).range(1..))]
     pub port: u16,
 }
 

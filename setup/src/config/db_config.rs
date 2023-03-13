@@ -5,22 +5,28 @@ use serde::Deserialize;
 
 use crate::helpers;
 
-#[derive(Debug, Parser, Deserialize, Default)]
+pub const DEFAULT_USER: &str = "blueheim";
+pub const DEFAULT_PASSWORD: &str = "dev";
+pub const DEFAULT_HOST: &str = "127.0.0.1";
+pub const DEFAULT_PORT: &str = "5432";
+pub const DEFAULT_NAME: &str = "wsstudy";
+
+#[derive(Debug, Parser, Deserialize, Default, PartialEq)]
 pub struct DbConfig {
     /// Database user
-    #[clap(long, default_value = "blueheim")]
+    #[clap(long, default_value = DEFAULT_USER)]
     pub user: String,
     /// Database password
-    #[clap(long, default_value = "dev")]
+    #[clap(long, default_value = DEFAULT_PASSWORD)]
     pub password: String,
     /// Database host
-    #[clap(long, default_value = "127.0.0.1")]
+    #[clap(long, default_value = DEFAULT_HOST)]
     pub host: String,
     /// PORT number for the database connection
-    #[clap(long, default_value = "5432")]
+    #[clap(long, default_value = DEFAULT_PORT)]
     pub port: u16,
     /// Database name
-    #[clap(long, default_value = "wsstudy")]
+    #[clap(long, default_value = DEFAULT_NAME)]
     pub name: String,
 }
 
