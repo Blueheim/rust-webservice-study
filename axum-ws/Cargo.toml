@@ -1,7 +1,0 @@
-[package]
-name = "axum-ws"
-version = "0.1.0"
-authors = ["XD <blueheim>"]
-edition = "2021"
-
-[dependencies]
