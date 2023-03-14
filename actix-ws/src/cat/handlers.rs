@@ -10,7 +10,7 @@ use domains::{
 use errors::AppError;
 
 /// Fetch all cats
-pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {
+pub async fn fetch_all(data: web::Data<DataSource>) -> Result<HttpResponse, AppError> {
     let cats = data
         .exec_controller(
             |data_source| Box::pin(controller_mock::select_all(data_source)),
@@ -22,7 +22,7 @@ pub async fn fetch_all_cats(data: web::Data<DataSource>) -> Result<HttpResponse,
 }
 
 /// Fetch one cat
-pub async fn fetch_one_cat(
+pub async fn fetch_one(
     data: web::Data<DataSource>,
     path: web::Path<i32>,
 ) -> Result<HttpResponse, AppError> {
@@ -39,7 +39,7 @@ pub async fn fetch_one_cat(
 }
 
 /// Add new cat
-pub async fn add_new_cat(
+pub async fn add_one(
     new_cat: web::Json<NewCat>, // data payload
     data: web::Data<DataSource>,
 ) -> Result<HttpResponse, AppError> {
@@ -54,7 +54,7 @@ pub async fn add_new_cat(
 }
 
 /// Modify existing cat
-pub async fn modify_cat(
+pub async fn modify_one(
     data: web::Data<DataSource>,
     update_cat: web::Json<UpdateCat>,
     path: web::Path<i32>,
@@ -84,7 +84,7 @@ pub async fn modify_cat(
 }
 
 /// Replace existing cat
-pub async fn replace_cat(
+pub async fn replace_one(
     data: web::Data<DataSource>,
     replace_cat: web::Json<ReplaceCat>,
     path: web::Path<i32>,
@@ -114,7 +114,7 @@ pub async fn replace_cat(
 }
 
 /// Delete existing cat
-pub async fn remove_cat(
+pub async fn remove_one(
     data: web::Data<DataSource>,
     path: web::Path<i32>,
 ) -> Result<HttpResponse, AppError> {

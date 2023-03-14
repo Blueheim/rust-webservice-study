@@ -1,5 +1,5 @@
 use errors::AppError;
-use setup::APP_CONFIG;
+use setup::{config::app_config::DataMode, APP_CONFIG};
 use std::env;
 use warp_ws::start;
 
@@ -14,12 +14,15 @@ async fn main() -> Result<(), AppError> {
     dotenv::from_path(env_file).ok();
 
     // Data source selection
-    let data_source = if env::var("MOCK_DATA").is_ok() {
-        println!("📄 Data source set to mock");
-        DataSource::mock(None)
-    } else {
-        println!("🛢️ Data source set to db");
-        DataSource::db().await
+    let data_source = match &APP_CONFIG.data_mode {
+        DataMode::File => {
+            println!("📄 Data source set to: File");
+            DataSource::mock(None)
+        }
+        DataMode::Database => {
+            println!("🛢️ Data source set to: Db");
+            DataSource::db().await
+        }
     };
 
     let addr = &APP_CONFIG.server.format_url();

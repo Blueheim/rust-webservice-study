@@ -8,12 +8,12 @@ pub const SCOPE: &str = "/cats";
 pub fn routes_config(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope(SCOPE)
-            .route("/", web::get().to(handlers::fetch_all_cats))
-            .route("/{cat_id}/", web::get().to(handlers::fetch_one_cat))
-            .route("/", web::post().to(handlers::add_new_cat))
-            .route("/{cat_id}/", web::patch().to(handlers::modify_cat))
-            .route("/{cat_id}/", web::put().to(handlers::replace_cat))
-            .route("/{cat_id}/", web::delete().to(handlers::remove_cat)),
+            .route("/", web::get().to(handlers::fetch_all))
+            .route("/{cat_id}/", web::get().to(handlers::fetch_one))
+            .route("/", web::post().to(handlers::add_one))
+            .route("/{cat_id}/", web::patch().to(handlers::modify_one))
+            .route("/{cat_id}/", web::put().to(handlers::replace_one))
+            .route("/{cat_id}/", web::delete().to(handlers::remove_one)),
     );
 }
 
@@ -22,7 +22,7 @@ mod tests {
     use super::*;
 
     use actix_web::{test, web, App};
-    use chrono::{Utc};
+    use chrono::Utc;
     use common::{InfoPayload, SuccessPayload};
     use domains::{
         cat::models::{Cat, CatId, NewCat, ReplaceCat, UpdateCat},
@@ -50,7 +50,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_get_all_cats() {
+    async fn test_get_all() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -60,14 +60,14 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Vec<Cat>> = test::call_and_read_body_json(&app, req).await;
+        let payload: SuccessPayload<Vec<Cat>> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.data.len(), 2);
+        assert_eq!(payload.data.len(), 2);
     }
 
     #[actix_web::test]
-    async fn test_get_one_cat() {
+    async fn test_get_one() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -77,14 +77,14 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
+        let payload: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.data.id.0, "1".to_string());
+        assert_eq!(payload.data.id.0, "1".to_string());
     }
 
     #[actix_web::test]
-    async fn test_post_cat() {
+    async fn test_post_one() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -99,14 +99,14 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
+        let payload: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.data.id.0, "3".to_string());
+        assert_eq!(payload.data.id.0, "3".to_string());
     }
 
     #[actix_web::test]
-    async fn test_patch_cat() {
+    async fn test_patch_one() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -121,15 +121,15 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
+        let payload: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.data.name, "A".to_string());
-        assert_eq!(resp.data.weight.unwrap(), 7.5);
+        assert_eq!(payload.data.name, "A".to_string());
+        assert_eq!(payload.data.weight.unwrap(), 7.5);
     }
 
     #[actix_web::test]
-    async fn test_put_cat() {
+    async fn test_put_one() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -144,16 +144,16 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
+        let payload: SuccessPayload<Cat> = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.data.name, "Z".to_string());
-        assert_eq!(resp.data.age, 5);
-        assert_eq!(resp.data.weight.unwrap(), 5.4);
+        assert_eq!(payload.data.name, "Z".to_string());
+        assert_eq!(payload.data.age, 5);
+        assert_eq!(payload.data.weight.unwrap(), 5.4);
     }
 
     #[actix_web::test]
-    async fn test_delete_cat() {
+    async fn test_delete_one() {
         // Arrange
         let data = test_data_mock();
         let app =
@@ -163,9 +163,9 @@ mod tests {
             .to_request();
 
         // Act
-        let resp: InfoPayload = test::call_and_read_body_json(&app, req).await;
+        let payload: InfoPayload = test::call_and_read_body_json(&app, req).await;
 
         // Assert
-        assert_eq!(resp.message.is_empty(), false);
+        assert_eq!(payload.message.is_empty(), false);
     }
 }

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{net::SocketAddrV4, sync::Arc};
 
 use domains::data_source::DataSource;
 use errors::handle_rejection;
@@ -29,7 +29,10 @@ pub async fn start(data_source: DataSource, addr: &str) -> Result<(), std::io::E
 
     let routes = root_scope.and(api).recover(handle_rejection);
 
-    warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
+    let socket = addr
+        .parse::<SocketAddrV4>()
+        .expect("Can't parse addr into v4");
+    warp::serve(routes).run(socket).await;
 
     Ok(())
 }

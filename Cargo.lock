@@ -2682,6 +2682,7 @@ dependencies = [
 name = "warp-ws"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "common",
  "domains",
  "dotenv",
